@@ -50,7 +50,7 @@
   const { loading: pageLoading } = useAsync(
     async () => {
       await Promise.all([
-        institucionesStore.institutions.length === 0
+        institucionesStore.instituciones.length === 0
           ? institucionesStore.fetchAll()
           : Promise.resolve(),
         tramitesStore.fetchList(buildFilters()),
