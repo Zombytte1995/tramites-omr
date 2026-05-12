@@ -160,7 +160,13 @@
           : Promise.resolve(),
       ])
 
-      if (isEdit.value) fillFormFromStore()
+      if (isEdit.value) {
+        fillFormFromStore()
+      } else if (route.query['institucion_id']) {
+        // Flujo de retorno desde InstitucionFormView (?return=tramite-form):
+        // preselecciona la institución recién creada en el select.
+        form.institucion_id = Number(route.query['institucion_id'])
+      }
 
       // Snapshot inicial — a partir de aquí isDirty puede ser true
       initialForm.value = { ...form }
@@ -397,16 +403,27 @@
         />
 
         <!-- ── Institución ─────────────────────────────────────────────────── -->
-        <BaseSelect
-          v-model="form.institucion_id"
-          label="Institución responsable"
-          :options="institucionOptions"
-          placeholder="Selecciona una institución…"
-          :error="fieldErrors['institucion_id'] || undefined"
-          :required="true"
-          :disabled="loading"
-          @blur="validateField('institucion_id')"
-        />
+        <div class="space-y-1">
+          <BaseSelect
+            v-model="form.institucion_id"
+            label="Institución responsable"
+            :options="institucionOptions"
+            placeholder="Selecciona una institución…"
+            :error="fieldErrors['institucion_id'] || undefined"
+            :required="true"
+            :disabled="loading"
+            @blur="validateField('institucion_id')"
+          />
+          <!-- Flujo premium: crear nueva institución sin perder el formulario -->
+          <div class="flex justify-end">
+            <RouterLink
+              to="/instituciones/nueva?return=tramite-form"
+              class="text-xs text-indigo-600 transition-colors hover:text-indigo-800 focus-visible:outline-none focus-visible:underline"
+            >
+              + Nueva institución
+            </RouterLink>
+          </div>
+        </div>
 
         <!-- ── Descripción con contador de caracteres ──────────────────────── -->
         <div class="flex flex-col gap-1">
