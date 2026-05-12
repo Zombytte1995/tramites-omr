@@ -25,7 +25,8 @@ Route::get('tramites/{tramite}', [TramiteController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
     Route::post('instituciones', [InstitucionController::class, 'store']);
 
-    Route::post('tramites',              [TramiteController::class, 'store']);
-    Route::put('tramites/{tramite}',     [TramiteController::class, 'update']);
-    Route::delete('tramites/{tramite}',  [TramiteController::class, 'destroy']);
+    Route::post('tramites',                          [TramiteController::class, 'store']);
+    Route::put('tramites/{tramite}',                 [TramiteController::class, 'update']);
+    Route::delete('tramites/{tramite}',              [TramiteController::class, 'destroy']);
+    Route::post('tramites/{tramite}/resumen-ia',     [TramiteController::class, 'resumen']);
 });

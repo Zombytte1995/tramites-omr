@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\GeminiException;
 use DomainException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -25,9 +26,9 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    // DomainException es una regla de negocio rota, no un error de servidor
     protected $dontReport = [
-        DomainException::class,
+        DomainException::class,   // regla de negocio rota, no bug de servidor
+        GeminiException::class,   // error operacional de API externa, no bug
     ];
 
     /**
@@ -81,6 +82,9 @@ class Handler extends ExceptionHandler
 
             $e instanceof DomainException
                 => [422, $e->getMessage(), (object) []],
+
+            $e instanceof GeminiException
+                => [503, $e->getMessage(), (object) []],
 
             // HttpException genérico: usa el status code propio (ej. 419, 429, 503)
             $e instanceof HttpException

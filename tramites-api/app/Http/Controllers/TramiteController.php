@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateTramiteAction;
 use App\Actions\DeactivateTramiteAction;
+use App\Actions\GenerarResumenIaAction;
 use App\Actions\GetTramiteAction;
 use App\Actions\ListTramitesAction;
 use App\Actions\UpdateTramiteAction;
@@ -22,6 +23,7 @@ class TramiteController extends Controller
         private readonly CreateTramiteAction $create,
         private readonly UpdateTramiteAction $update,
         private readonly DeactivateTramiteAction $deactivate,
+        private readonly GenerarResumenIaAction $resumenIa,
     ) {}
 
     public function index(Request $request): TramiteCollection
@@ -62,6 +64,19 @@ class TramiteController extends Controller
             'success' => true,
             'message' => 'Trámite desactivado correctamente.',
             'errors'  => (object) [],
+        ]);
+    }
+
+    public function resumen(int $id): JsonResponse
+    {
+        $tramite = $this->get->execute($id);
+        $resumen = $this->resumenIa->execute($tramite);
+
+        return response()->json([
+            'data' => [
+                'tramite_id' => $tramite->id,
+                'resumen'    => $resumen,
+            ],
         ]);
     }
 }
