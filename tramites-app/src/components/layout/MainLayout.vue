@@ -216,71 +216,6 @@
         </RouterLink>
       </nav>
 
-      <!-- Sección de usuario al pie -->
-      <div class="shrink-0 border-t border-indigo-800 p-2">
-        <Menu as="div" class="relative">
-          <MenuButton
-            class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-            :title="!sidebarExpanded ? (user?.name ?? 'Usuario') : undefined"
-          >
-            <!-- Avatar con iniciales -->
-            <span
-              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white ring-2 ring-indigo-500"
-              aria-hidden="true"
-            >
-              {{ initials }}
-            </span>
-
-            <!-- Nombre + email (ocultos en sidebar colapsado) -->
-            <span
-              class="min-w-0 flex-1 transition-all duration-200"
-              :class="sidebarExpanded ? 'opacity-100' : 'sm:hidden opacity-100'"
-            >
-              <span class="block truncate font-medium text-white">
-                {{ user?.name }}
-              </span>
-              <span class="block truncate text-xs text-indigo-300">
-                {{ user?.email }}
-              </span>
-            </span>
-          </MenuButton>
-
-          <!-- Dropdown del usuario -->
-          <MenuItems
-            class="absolute bottom-full left-0 z-10 mb-1 w-56 overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-slate-200 focus:outline-none"
-          >
-            <!-- Info del usuario (no clickable) -->
-            <div class="border-b border-slate-100 px-4 py-3">
-              <p class="text-xs font-semibold text-slate-500">Sesión activa</p>
-              <p class="mt-0.5 truncate text-sm font-medium text-slate-900">
-                {{ user?.name }}
-              </p>
-              <p class="truncate text-xs text-slate-500">{{ user?.email }}</p>
-            </div>
-
-            <!-- Cerrar sesión -->
-            <MenuItem v-slot="{ active }">
-              <button
-                type="button"
-                :class="[
-                  'flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors',
-                  active
-                    ? 'bg-red-50 text-red-700'
-                    : 'text-slate-700 hover:bg-slate-50',
-                ]"
-                :aria-busy="logoutLoading"
-                @click="doLogout()"
-              >
-                <ArrowRightOnRectangleIcon
-                  class="h-4 w-4 shrink-0"
-                  aria-hidden="true"
-                />
-                {{ logoutLoading ? 'Cerrando sesión…' : 'Cerrar sesión' }}
-              </button>
-            </MenuItem>
-          </MenuItems>
-        </Menu>
-      </div>
     </aside>
 
     <!-- ── Área principal ─────────────────────────────────────────────────────── -->
@@ -308,25 +243,51 @@
 
         <div class="flex-1" />
 
-        <!-- Perfil compacto del usuario — reemplaza el botón de notificaciones -->
-        <div class="flex items-center gap-2.5">
-          <!-- Avatar con iniciales -->
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white ring-2 ring-indigo-200"
-            aria-hidden="true"
+        <!-- Menú de usuario con dropdown -->
+        <Menu as="div" class="relative">
+          <MenuButton class="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+            <!-- Avatar con iniciales -->
+            <span
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white ring-2 ring-indigo-200"
+              aria-hidden="true"
+            >
+              {{ initials }}
+            </span>
+            <!-- Nombre y correo (ocultos en móvil) -->
+            <span class="hidden flex-col text-left sm:flex">
+              <span class="text-sm font-semibold leading-tight text-slate-800">{{ user?.name }}</span>
+              <span class="text-xs leading-tight text-slate-500">{{ user?.email }}</span>
+            </span>
+          </MenuButton>
+
+          <!-- Dropdown -->
+          <MenuItems
+            class="absolute right-0 top-full z-10 mt-1 w-56 overflow-hidden rounded-xl bg-white shadow-xl ring-1 ring-slate-200 focus:outline-none"
           >
-            {{ initials }}
-          </span>
-          <!-- Nombre y correo (ocultos en móvil) -->
-          <span class="hidden flex-col sm:flex">
-            <span class="text-sm font-semibold leading-tight text-slate-800">
-              {{ user?.name }}
-            </span>
-            <span class="text-xs leading-tight text-slate-500">
-              {{ user?.email }}
-            </span>
-          </span>
-        </div>
+            <!-- Info del usuario (no clickable) -->
+            <div class="border-b border-slate-100 px-4 py-3">
+              <p class="text-xs font-semibold text-slate-500">Sesión activa</p>
+              <p class="mt-0.5 truncate text-sm font-medium text-slate-900">{{ user?.name }}</p>
+              <p class="truncate text-xs text-slate-500">{{ user?.email }}</p>
+            </div>
+
+            <!-- Cerrar sesión -->
+            <MenuItem v-slot="{ active }">
+              <button
+                type="button"
+                :class="[
+                  'flex w-full items-center gap-2 px-4 py-3 text-sm transition-colors',
+                  active ? 'bg-red-50 text-red-700' : 'text-slate-700 hover:bg-slate-50',
+                ]"
+                :aria-busy="logoutLoading"
+                @click="doLogout()"
+              >
+                <ArrowRightOnRectangleIcon class="h-4 w-4 shrink-0" aria-hidden="true" />
+                {{ logoutLoading ? 'Cerrando sesión…' : 'Cerrar sesión' }}
+              </button>
+            </MenuItem>
+          </MenuItems>
+        </Menu>
       </header>
 
       <!-- Contenido de la página -->
