@@ -20,6 +20,7 @@
   import BaseButton from '@/components/ui/BaseButton.vue'
   import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
   import Skeleton from '@/components/ui/Skeleton.vue'
+  import TramiteFormModal from '@/components/tramites/TramiteFormModal.vue'
   import type { TramiteResumen } from '@/types'
 
   // ── Stores & routing ─────────────────────────────────────────────────────────
@@ -43,6 +44,13 @@
     },
     { immediate: true },
   )
+
+  // ── Modal de edición ──────────────────────────────────────────────────────────
+  const editOpen = ref(false)
+
+  function onTramiteSaved(): void {
+    tramitesStore.fetchOne(tramiteId.value)
+  }
 
   // ── Desactivar ────────────────────────────────────────────────────────────────
   const confirmOpen = ref(false)
@@ -164,7 +172,7 @@
         <BaseButton
           variant="secondary"
           size="sm"
-          @click="router.push(`/tramites/${tramiteId}/editar`)"
+          @click="editOpen = true"
         >
           <template #icon-left>
             <PencilSquareIcon class="h-4 w-4" aria-hidden="true" />
@@ -486,5 +494,11 @@
     cancel-text="Cancelar"
     variant="danger"
     @confirm="confirmarDesactivar"
+  />
+
+  <TramiteFormModal
+    v-model:open="editOpen"
+    :tramite="tramite ?? null"
+    @saved="onTramiteSaved"
   />
 </template>
