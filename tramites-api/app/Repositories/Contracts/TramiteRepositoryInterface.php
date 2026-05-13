@@ -73,4 +73,14 @@ interface TramiteRepositoryInterface
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function deactivate(int $id): bool;
+
+    /**
+     * Retorna todos los trámites activos (sin paginar) aplicando los mismos
+     * filtros que paginate(). Se usa exclusivamente para la exportación a Excel.
+     *
+     * @param  int|null    $institucionId  Restringe por institución.
+     * @param  string|null $search         Filtra por nombre (LIKE %search%).
+     * @return \Illuminate\Support\Collection<int, Tramite>
+     */
+    public function getForExport(?int $institucionId, ?string $search): \Illuminate\Support\Collection;
 }

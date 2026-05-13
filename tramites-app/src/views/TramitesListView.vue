@@ -11,6 +11,7 @@
     TrashIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline'
+  import { exportTramites } from '@/api/tramites'
   import { useInstitucionesStore } from '@/stores/instituciones'
   import { useTramitesStore } from '@/stores/tramites'
   import { useToast } from '@/composables/useToast'
@@ -200,9 +201,32 @@
     tramitePendiente.value = null
   }
 
-  // ── Exportar (placeholder) ────────────────────────────────────────────────────
-  function exportarExcel(): void {
-    toast.info('La exportación a Excel estará disponible próximamente.')
+  // ── Exportar a Excel ──────────────────────────────────────────────────────────
+  const exportLoading = ref(false)
+
+  async function exportarExcel(): Promise<void> {
+    if (exportLoading.value) return
+    exportLoading.value = true
+
+    try {
+      const blob = await exportTramites(buildFilters())
+      const url  = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const date = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+
+      link.href     = url
+      link.download = `tramites_${date}.xlsx`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+
+      toast.success('Archivo Excel descargado correctamente.')
+    } catch {
+      toast.error('No se pudo generar el archivo Excel. Intenta de nuevo.')
+    } finally {
+      exportLoading.value = false
+    }
   }
 </script>
 
@@ -297,12 +321,25 @@
             variant="ghost"
             size="md"
             title="Exportar tabla a Excel"
+            :disabled="exportLoading"
+            :aria-busy="exportLoading"
             @click="exportarExcel"
           >
             <template #icon-left>
-              <ArrowDownTrayIcon class="h-4 w-4" aria-hidden="true" />
+              <svg
+                v-if="exportLoading"
+                class="h-4 w-4 animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 22 12h-4z" />
+              </svg>
+              <ArrowDownTrayIcon v-else class="h-4 w-4" aria-hidden="true" />
             </template>
-            Exportar
+            {{ exportLoading ? 'Exportando…' : 'Exportar' }}
           </BaseButton>
         </div>
       </div>

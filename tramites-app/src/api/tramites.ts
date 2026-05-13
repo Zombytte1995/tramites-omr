@@ -72,3 +72,16 @@ export async function generarResumenIA(id: number): Promise<TramiteResumen> {
   )
   return data.data
 }
+
+/**
+ * GET /tramites/export
+ * Descarga el listado filtrado como archivo .xlsx (blob).
+ * Retorna el Blob listo para disparar la descarga en el navegador.
+ */
+export async function exportTramites(filters: TramiteFilters = {}): Promise<Blob> {
+  const { data } = await apiClient.get<Blob>('/tramites/export', {
+    params: filters,
+    responseType: 'blob',
+  })
+  return data
+}

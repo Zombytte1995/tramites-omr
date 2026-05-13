@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateTramiteAction;
 use App\Actions\DeactivateTramiteAction;
+use App\Actions\ExportTramitesAction;
 use App\Actions\GenerarResumenIaAction;
 use App\Actions\GetTramiteAction;
 use App\Actions\ListTramitesAction;
@@ -14,6 +15,7 @@ use App\Http\Resources\TramiteCollection;
 use App\Http\Resources\TramiteResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TramiteController extends Controller
 {
@@ -24,6 +26,7 @@ class TramiteController extends Controller
         private readonly UpdateTramiteAction $update,
         private readonly DeactivateTramiteAction $deactivate,
         private readonly GenerarResumenIaAction $resumenIa,
+        private readonly ExportTramitesAction $export,
     ) {}
 
     public function index(Request $request): TramiteCollection
@@ -65,6 +68,14 @@ class TramiteController extends Controller
             'message' => 'Trámite desactivado correctamente.',
             'errors'  => (object) [],
         ]);
+    }
+
+    public function exportExcel(Request $request): BinaryFileResponse
+    {
+        return $this->export->execute(
+            institucionId: $request->integer('institucion_id') ?: null,
+            search: $request->string('search')->toString() ?: null,
+        );
     }
 
     public function resumen(int $id): JsonResponse

@@ -50,4 +50,18 @@ class TramiteRepository implements TramiteRepositoryInterface
 
         return $tramite->update(['activo' => false]);
     }
+
+    public function getForExport(?int $institucionId, ?string $search): \Illuminate\Support\Collection
+    {
+        return $this->model
+            ->with('institucion')
+            ->activos()
+            ->when($institucionId, fn ($q) => $q->deInstitucion($institucionId))
+            ->when(
+                $search !== null && $search !== '',
+                fn ($q) => $q->where('nombre', 'like', "%{$search}%")
+            )
+            ->orderBy('nombre')
+            ->get();
+    }
 }

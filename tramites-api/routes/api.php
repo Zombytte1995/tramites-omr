@@ -18,9 +18,11 @@ Route::prefix('auth')->group(function () {
 });
 
 // ── Rutas públicas (solo lectura) ─────────────────────────────────────────────
-Route::get('instituciones',      [InstitucionController::class, 'index']);
-Route::get('tramites',           [TramiteController::class, 'index']);
-Route::get('tramites/{tramite}', [TramiteController::class, 'show']);
+Route::get('instituciones',       [InstitucionController::class, 'index']);
+Route::get('tramites',            [TramiteController::class, 'index']);
+// /export debe ir antes que /{tramite} para no ser capturado como ID
+Route::get('tramites/export',     [TramiteController::class, 'exportExcel']);
+Route::get('tramites/{tramite}',  [TramiteController::class, 'show']);
 
 // ── Rutas protegidas (escritura + dashboard) ──────────────────────────────────
 Route::middleware('auth:api')->group(function () {
