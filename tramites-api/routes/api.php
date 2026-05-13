@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\TramiteController;
 use Illuminate\Support\Facades\Route;
@@ -21,8 +22,10 @@ Route::get('instituciones',      [InstitucionController::class, 'index']);
 Route::get('tramites',           [TramiteController::class, 'index']);
 Route::get('tramites/{tramite}', [TramiteController::class, 'show']);
 
-// ── Rutas protegidas (escritura) ──────────────────────────────────────────────
+// ── Rutas protegidas (escritura + dashboard) ──────────────────────────────────
 Route::middleware('auth:api')->group(function () {
+    Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+
     Route::post('instituciones', [InstitucionController::class, 'store']);
 
     Route::post('tramites',                          [TramiteController::class, 'store']);

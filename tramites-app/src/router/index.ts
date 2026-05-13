@@ -22,6 +22,8 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     /** Texto que aparece en la pestaña del navegador (<title>). */
     title?: string
+    /** Layout a usar. 'auth' = sin sidebar, 'main' (default) = con sidebar. */
+    layout?: 'main' | 'auth'
   }
 }
 
@@ -45,7 +47,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView, // eager: primera vista del usuario no autenticado
-      meta: { title: 'Iniciar sesión' },
+      meta: { title: 'Iniciar sesión', layout: 'auth' as const },
     },
 
     // ── Dashboard ─────────────────────────────────────────────────────────────
