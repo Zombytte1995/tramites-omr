@@ -308,19 +308,24 @@
 
         <div class="flex-1" />
 
-        <!-- Logo OMR institucional en el topbar -->
-        <div class="flex items-center gap-2 rounded-lg bg-indigo-900 px-3 py-1.5">
-          <img
-            src="/logo_gobierno.svg"
-            alt=""
+        <!-- Perfil compacto del usuario — reemplaza el botón de notificaciones -->
+        <div class="flex items-center gap-2.5">
+          <!-- Avatar con iniciales -->
+          <span
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white ring-2 ring-indigo-200"
             aria-hidden="true"
-            class="h-6 w-6 object-contain"
-          />
-          <img
-            src="/GOES_OMR_letra_blanco.png"
-            alt="Organismo de Mejora Regulatoria"
-            class="h-5 w-auto object-contain"
-          />
+          >
+            {{ initials }}
+          </span>
+          <!-- Nombre y correo (ocultos en móvil) -->
+          <span class="hidden flex-col sm:flex">
+            <span class="text-sm font-semibold leading-tight text-slate-800">
+              {{ user?.name }}
+            </span>
+            <span class="text-xs leading-tight text-slate-500">
+              {{ user?.email }}
+            </span>
+          </span>
         </div>
       </header>
 
