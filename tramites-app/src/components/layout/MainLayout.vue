@@ -11,7 +11,6 @@
     ChevronDoubleRightIcon,
     DocumentTextIcon,
     HomeIcon,
-    PlusIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline'
   import { useAuthStore } from '@/stores/auth'
@@ -45,7 +44,6 @@
     to: string
     label: string
     icon: typeof HomeIcon
-    bonus?: typeof PlusIcon
     match: (path: string) => boolean
   }
 
@@ -63,10 +61,9 @@
       match: (p) => p.startsWith('/tramites'),
     },
     {
-      to: '/instituciones/nueva',
-      label: 'Nueva Institución',
+      to: '/instituciones',
+      label: 'Instituciones',
       icon: BuildingOffice2Icon,
-      bonus: PlusIcon,
       match: (p) => p.startsWith('/instituciones'),
     },
   ]
@@ -200,12 +197,6 @@
             <component
               :is="link.icon"
               class="h-5 w-5"
-              aria-hidden="true"
-            />
-            <component
-              :is="link.bonus"
-              v-if="link.bonus"
-              class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-indigo-500 ring-2 ring-indigo-900 group-[.active]:bg-indigo-300"
               aria-hidden="true"
             />
           </span>

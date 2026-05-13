@@ -30,4 +30,20 @@ interface InstitucionRepositoryInterface
      * @return Institucion La instancia recién persistida.
      */
     public function create(array $data): Institucion;
+
+    /**
+     * Actualiza los campos de una institución existente.
+     *
+     * @param  array{nombre?: string, tipo?: string}  $data
+     *
+     * @throws ModelNotFoundException
+     */
+    public function update(int $id, array $data): Institucion;
+
+    /**
+     * Desactiva una institución estableciendo activo = false.
+     *
+     * @throws ModelNotFoundException
+     */
+    public function deactivate(int $id): bool;
 }

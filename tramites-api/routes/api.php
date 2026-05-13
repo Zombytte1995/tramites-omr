@@ -33,6 +33,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('dashboard/stats', [DashboardController::class, 'stats']);
 
     Route::post('instituciones', [InstitucionController::class, 'store']);
+    Route::put('instituciones/{institucion}', [InstitucionController::class, 'update']);
+    Route::delete('instituciones/{institucion}', [InstitucionController::class, 'destroy']);
 
     Route::post('tramites', [TramiteController::class, 'store']);
     Route::put('tramites/{tramite}', [TramiteController::class, 'update']);

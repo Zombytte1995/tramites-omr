@@ -9,7 +9,7 @@
 
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { createInstitucion, listInstituciones } from '@/api/instituciones'
+import { createInstitucion, deactivateInstitucion, listInstituciones, updateInstitucion } from '@/api/instituciones'
 import type { Institucion, InstitucionFormData } from '@/types'
 
 export const useInstitucionesStore = defineStore('instituciones', () => {
@@ -86,6 +86,37 @@ export const useInstitucionesStore = defineStore('instituciones', () => {
     }
   }
 
+  async function update(id: number, data: Partial<InstitucionFormData>): Promise<Institucion | null> {
+    loading.value = true
+    error.value = null
+    try {
+      const actualizada = await updateInstitucion(id, data)
+      const idx = instituciones.value.findIndex((i) => i.id === id)
+      if (idx !== -1) instituciones.value[idx] = actualizada
+      return actualizada
+    } catch (e) {
+      error.value = e instanceof Error ? e : new Error(String(e))
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deactivate(id: number): Promise<boolean> {
+    loading.value = true
+    error.value = null
+    try {
+      await deactivateInstitucion(id)
+      instituciones.value = instituciones.value.filter((i) => i.id !== id)
+      return true
+    } catch (e) {
+      error.value = e instanceof Error ? e : new Error(String(e))
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     // state
     instituciones,
@@ -97,5 +128,7 @@ export const useInstitucionesStore = defineStore('instituciones', () => {
     // actions
     fetchAll,
     create,
+    update,
+    deactivate,
   }
 })

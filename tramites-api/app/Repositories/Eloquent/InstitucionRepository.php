@@ -27,4 +27,19 @@ class InstitucionRepository implements InstitucionRepositoryInterface
     {
         return $this->model->create($data);
     }
+
+    public function update(int $id, array $data): Institucion
+    {
+        $institucion = $this->model->findOrFail($id);
+        $institucion->update($data);
+
+        return $institucion->fresh();
+    }
+
+    public function deactivate(int $id): bool
+    {
+        $institucion = $this->model->findOrFail($id);
+
+        return $institucion->update(['activo' => false]);
+    }
 }

@@ -87,6 +87,13 @@ const router = createRouter({
 
     // ── Instituciones ─────────────────────────────────────────────────────────
     {
+      path: '/instituciones',
+      name: 'instituciones-list',
+      component: () => import('@/views/InstitucionesListView.vue'),
+      meta: { requiresAuth: true, title: 'Instituciones' },
+    },
+    {
+      // Se mantiene para el flujo de retorno desde TramiteFormView
       path: '/instituciones/nueva',
       name: 'institucion-crear',
       component: () => import('@/views/InstitucionFormView.vue'),

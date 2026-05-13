@@ -20,3 +20,26 @@ export async function createInstitucion(payload: InstitucionFormData): Promise<I
   const { data } = await apiClient.post<ApiResponse<Institucion>>('/instituciones', payload)
   return data.data
 }
+
+/**
+ * PUT /instituciones/{id}
+ * Actualiza nombre y/o tipo de una institución.
+ * Requiere autenticación.
+ */
+export async function updateInstitucion(
+  id: number,
+  payload: Partial<InstitucionFormData>,
+): Promise<Institucion> {
+  const { data } = await apiClient.put<ApiResponse<Institucion>>(`/instituciones/${id}`, payload)
+  return data.data
+}
+
+/**
+ * DELETE /instituciones/{id}
+ * Desactiva una institución (soft delete lógico: activo = false).
+ * Falla con 422 si tiene trámites activos asociados.
+ * Requiere autenticación.
+ */
+export async function deactivateInstitucion(id: number): Promise<void> {
+  await apiClient.delete(`/instituciones/${id}`)
+}
