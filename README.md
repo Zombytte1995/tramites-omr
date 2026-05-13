@@ -12,22 +12,12 @@
 
 ---
 
-## 🌐 Demo en vivo
-
-| Servicio  | URL                                                                  |
-|-----------|----------------------------------------------------------------------|
-| Frontend  | <https://tramites-omr.vercel.app>                                    |
-| API       | <https://tramites-omr-api.onrender.com/api>                          |
-| Health    | <https://tramites-omr-api.onrender.com/api/health>                   |
-
-**Credenciales de demo:**
+## 🔑 Credenciales de demo
 
 ```text
 Email:    admin@omr.gob.sv
 Password: password
 ```
-
-> El backend en Render puede tardar ~30 s en despertar si estuvo inactivo (plan gratuito).
 
 ---
 
@@ -116,8 +106,6 @@ El proyecto fue construido como prueba técnica con énfasis en arquitectura lim
 | GitHub Actions | CI paralelo: Pest + Pint (backend) · type-check + build (frontend) |
 | nginx:alpine | Servir SPA con gzip, cache inmutable de assets hasheados |
 | GKE (referencia) | Manifests K8s con probes, limits, Managed Certificate y Ingress |
-| Render | Deploy del backend (gratis, auto-deploy desde main) |
-| Vercel | Deploy del frontend (gratis, preview por PR) |
 
 ---
 
@@ -252,7 +240,6 @@ tramites-omr/
 - [x] **Docker + docker-compose** — entorno reproducible en un comando
 - [x] **GitHub Actions CI** — jobs paralelos backend/frontend, verde desde el primer commit
 - [x] **Manifests Kubernetes** de referencia para GKE (Deployment, Service, Ingress, Probes)
-- [x] **Deploy en vivo** — Render (API) + Vercel (frontend)
 - [x] **Endpoint /api/health** para liveness/readiness probes
 - [x] **Deep linking** — filtros reflejados en la URL, compartibles y recargables
 - [x] **Dirty guard** — confirmación antes de salir de formulario con cambios sin guardar
@@ -336,9 +323,8 @@ Con más tiempo, estas serían las siguientes prioridades:
 | Frontend (Vue, vistas, stores, UI)    | ~12 h    |
 | Tests automatizados (Pest)            | ~2 h     |
 | Docker, CI/CD, K8s manifests          | ~3 h     |
-| Deploy en Render y Vercel             | ~1 h     |
 | Documentación                         | ~2 h     |
-| **Total**                             | **~30 h** |
+| **Total**                             | **~29 h** |
 
 ---
 
