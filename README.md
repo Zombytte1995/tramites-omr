@@ -143,8 +143,7 @@ php artisan serve                    # http://localhost:8000
 ```bash
 cd tramites-app
 npm install
-# Crear tramites-app/.env.local:
-echo "VITE_API_URL=http://localhost:8000/api" > .env.local
+cp .env.example .env                 # VITE_API_URL=http://localhost:8000/api
 npm run dev                          # http://localhost:5173
 ```
 
