@@ -21,6 +21,7 @@
   import BaseSelect from '@/components/ui/BaseSelect.vue'
   import BaseTable from '@/components/ui/BaseTable.vue'
   import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+  import TramiteCreateModal from '@/components/tramites/TramiteCreateModal.vue'
   import type { TableColumn } from '@/components/ui/BaseTable.vue'
   import type { SelectOption } from '@/components/ui/BaseSelect.vue'
   import type { TramiteFilters } from '@/types'
@@ -201,6 +202,13 @@
     tramitePendiente.value = null
   }
 
+  // ── Modal de creación ─────────────────────────────────────────────────────────
+  const createModalOpen = ref(false)
+
+  async function onTramiteCreated(): Promise<void> {
+    await tramitesStore.fetchList(buildFilters())
+  }
+
   // ── Exportar a Excel ──────────────────────────────────────────────────────────
   const exportLoading = ref(false)
 
@@ -264,7 +272,7 @@
       <BaseButton
         variant="primary"
         size="md"
-        @click="router.push('/tramites/nuevo')"
+        @click="createModalOpen = true"
       >
         <template #icon-left>
           <span class="text-base font-bold leading-none" aria-hidden="true">+</span>
@@ -471,6 +479,12 @@
         </button>
       </nav>
     </div>
+
+    <!-- ── Modal de creación de trámite ──────────────────────────────────────── -->
+    <TramiteCreateModal
+      v-model:open="createModalOpen"
+      @created="onTramiteCreated"
+    />
 
     <!-- ── Modal de confirmación de desactivación ───────────────────────────── -->
     <ConfirmDialog
