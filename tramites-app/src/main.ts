@@ -7,13 +7,16 @@ import { useAuthStore } from '@/stores/auth'
 
 const app = createApp(App)
 
-// Pinia debe instalarse antes de usar cualquier store
+// Pinia antes que cualquier store
 app.use(createPinia())
-app.use(router)
 
-// Restaurar sesión desde localStorage antes de montar para evitar
-// el flash de "no autenticado" si el usuario ya tenía una sesión activa.
 const authStore = useAuthStore()
-authStore
-  .initFromStorage()
-  .finally(() => app.mount('#app'))
+
+// initFromStorage DEBE completarse (éxito o error) antes de instalar el router.
+// app.use(router) dispara la navegación inicial y con ella el beforeEach guard.
+// Si el router se instala antes, el guard ve isAuthenticated=false (el token
+// aún no se validó contra /auth/me) y redirige a /login aunque haya sesión.
+authStore.initFromStorage().finally(() => {
+  app.use(router)
+  app.mount('#app')
+})
