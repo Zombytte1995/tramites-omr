@@ -347,7 +347,7 @@ Con más tiempo, estas serían las siguientes prioridades:
 ## 👤 Autor
 
 **David Chavarría**
-[GitHub](https://github.com/Zombytte1995) · [LinkedIn](https://linkedin.com/in/david-chavarria)
+[GitHub](https://github.com/Zombytte1995) · [LinkedIn](https://www.linkedin.com/in/davidchavarria128)
 
 ---
 
