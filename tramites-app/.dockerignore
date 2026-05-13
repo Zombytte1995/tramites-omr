@@ -1,0 +1,26 @@
+# Dependencias (se instalan en el build stage)
+node_modules/
+
+# Artefactos de build anteriores
+dist/
+
+# Variables de entorno — VITE_API_URL se pasa como ARG, no como archivo
+.env
+.env.*
+.env.local
+.env.*.local
+
+# Control de versiones
+.git/
+.gitignore
+
+# Logs y caches de herramientas
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Archivos de Docker (no hace falta incluirlos en el contexto)
+Dockerfile
+.dockerignore
+nginx.conf
