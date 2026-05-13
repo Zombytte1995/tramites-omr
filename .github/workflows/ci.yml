@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancela ejecuciones anteriores del mismo PR/branch para ahorrar minutos
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 1: Backend (PHP 8.2 + Pest) ────────────────────────────────────────
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: tramites-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # shivammathur/setup-php es el action estándar de la comunidad PHP.
+      # coverage: none elimina Xdebug/PCOV, reduciendo el tiempo de setup ~30s.
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_sqlite, bcmath, mbstring
+          coverage: none
+
+      # Cachea vendor/ usando composer.lock como clave.
+      # Un cambio en cualquier dependencia invalida el cache automáticamente.
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: tramites-api/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('tramites-api/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Instalar dependencias PHP
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Copiar .env.example a .env
+        run: cp .env.example .env
+
+      # Genera APP_KEY y lo escribe en .env — necesario para que el
+      # contenedor de servicio de Laravel arranque correctamente.
+      - name: Generar APP_KEY
+        run: php artisan key:generate
+
+      # jwt:secret escribe JWT_SECRET en .env.
+      # Sin esto, el JWTServiceProvider falla al registrar la guardia 'api'.
+      - name: Generar JWT_SECRET
+        run: php artisan jwt:secret --force
+
+      # El archivo debe existir antes de migrate cuando DB_CONNECTION=sqlite.
+      # phpunit.xml usa :memory:, pero este step valida las migraciones con
+      # un archivo real — distinto propósito.
+      - name: Crear base de datos SQLite
+        run: touch database/database.sqlite
+
+      - name: Ejecutar migraciones
+        run: php artisan migrate --force
+
+      # --test devuelve exit 1 si hay violaciones de estilo, sin modificar
+      # archivos. Diferente a pint solo (que auto-fix y siempre exit 0).
+      - name: Laravel Pint — verificar estilo de código
+        run: ./vendor/bin/pint --test
+
+      # Los tests usan SQLite :memory: vía phpunit.xml (DB_CONNECTION=sqlite,
+      # DB_DATABASE=:memory:), independiente del archivo sqlite del step anterior.
+      - name: Correr tests con Pest
+        run: ./vendor/bin/pest
+
+  # ── Job 2: Frontend (Node 20 + Vite) ────────────────────────────────────────
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: tramites-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # setup-node con cache: 'npm' usa cache-dependency-path para generar
+      # la clave. Equivale a actions/cache sobre ~/.npm automáticamente.
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tramites-app/package-lock.json
+
+      # npm ci (no npm install) garantiza reproducibilidad: instala exactamente
+      # lo que está en package-lock.json, sin actualizar nada.
+      - name: Instalar dependencias Node
+        run: npm ci
+
+      # vue-tsc --noEmit -p tsconfig.app.json: type-check sin emitir archivos.
+      # Más rápido que npm run build porque Vite no transpila ni empaqueta.
+      - name: Type check
+        run: npm run type-check
+
+      # eslint . --fix: auto-corrige problemas que puede corregir y falla
+      # con exit 1 solo en errores no corregibles (lógica, tipos, etc.).
+      - name: Lint
+        run: npm run lint
+
+      # Construir el bundle completo verifica que no haya errores de TS
+      # que vue-tsc -b detecte además del noEmit anterior, y que Vite
+      # no encuentre imports rotos.
+      - name: Build
+        run: npm run build
+        env:
+          # VITE_API_URL se incrusta en el bundle durante el build.
+          # En CI usamos un valor placeholder válido para que la app compile.
+          VITE_API_URL: http://localhost:8000/api

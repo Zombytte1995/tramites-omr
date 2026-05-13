@@ -1,5 +1,8 @@
 # Trámites OMR
 
+[![Backend CI](https://github.com/Zombytte1995/tramites-omr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Zombytte1995/tramites-omr/actions/workflows/ci.yml)
+[![Frontend CI](https://github.com/Zombytte1995/tramites-omr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Zombytte1995/tramites-omr/actions/workflows/ci.yml)
+
 Sistema de gestión de trámites administrativos para el Organismo de Mejora Regulatoria de El Salvador.
 
 **Stack:** Laravel 10 · Vue 3 + TypeScript · Tailwind CSS v4 · JWT Auth · SQLite/PostgreSQL · Docker

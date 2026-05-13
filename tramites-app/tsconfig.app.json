@@ -12,6 +12,8 @@
     "erasableSyntaxOnly": true,
 
     /* Path aliases — espejo de resolve.alias en vite.config.ts */
+    /* ignoreDeprecations: baseUrl es deprecated en TS 6.0 pero aún funcional */
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
