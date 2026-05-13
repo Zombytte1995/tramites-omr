@@ -24,7 +24,7 @@ class Institucion extends Model
     ];
 
     protected $casts = [
-        'tipo'   => TipoInstitucion::class,
+        'tipo' => TipoInstitucion::class,
         'activo' => 'boolean',
     ];
 

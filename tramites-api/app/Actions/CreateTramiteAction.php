@@ -6,6 +6,7 @@ use App\Models\Tramite;
 use App\Repositories\Contracts\InstitucionRepositoryInterface;
 use App\Repositories\Contracts\TramiteRepositoryInterface;
 use DomainException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CreateTramiteAction
 {
@@ -27,10 +28,10 @@ class CreateTramiteAction
      *     institucion_id: int,
      *     dias_habiles: int,
      * }  $data  Datos ya validados por el Form Request.
-     * @return Tramite  La instancia creada con la relación `institucion` cargada.
+     * @return Tramite La instancia creada con la relación `institucion` cargada.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException  Si la institución no existe.
-     * @throws DomainException  Si la institución está inactiva.
+     * @throws ModelNotFoundException Si la institución no existe.
+     * @throws DomainException Si la institución está inactiva.
      */
     public function execute(array $data): Tramite
     {

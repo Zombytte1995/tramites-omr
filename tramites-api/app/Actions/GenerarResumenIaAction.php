@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Http;
 class GenerarResumenIaAction
 {
     private const CACHE_TTL_HORAS = 24;
+
     private const TIMEOUT_SEGUNDOS = 20;
+
     private const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
     /**
@@ -22,7 +24,7 @@ class GenerarResumenIaAction
      * invalide el resumen requiere limpiar la caché manualmente:
      *   Cache::forget("tramite.resumen.{$id}")
      *
-     * @throws GeminiException  Si la API key no está configurada o Gemini falla.
+     * @throws GeminiException Si la API key no está configurada o Gemini falla.
      */
     public function execute(Tramite $tramite): string
     {
@@ -31,7 +33,7 @@ class GenerarResumenIaAction
         if (blank($apiKey)) {
             throw new GeminiException(
                 'El servicio de resumen IA no está configurado. '
-                . 'Defina GEMINI_API_KEY en las variables de entorno.'
+                .'Defina GEMINI_API_KEY en las variables de entorno.'
             );
         }
 
@@ -45,11 +47,11 @@ class GenerarResumenIaAction
     private function llamarGemini(Tramite $tramite, string $apiKey): string
     {
         $model = config('services.gemini.model', 'gemini-1.5-flash');
-        $url   = self::API_BASE . "/{$model}:generateContent?key={$apiKey}";
+        $url = self::API_BASE."/{$model}:generateContent?key={$apiKey}";
 
         $prompt = 'Genera un resumen ejecutivo en español, máximo 3 oraciones, '
-            . "del siguiente trámite administrativo: {$tramite->nombre} - {$tramite->descripcion}. "
-            . 'Enfócate en su propósito y beneficio al ciudadano.';
+            ."del siguiente trámite administrativo: {$tramite->nombre} - {$tramite->descripcion}. "
+            .'Enfócate en su propósito y beneficio al ciudadano.';
 
         try {
             $response = Http::timeout(self::TIMEOUT_SEGUNDOS)

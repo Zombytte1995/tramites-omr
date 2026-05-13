@@ -6,6 +6,7 @@ use App\Models\Tramite;
 use App\Repositories\Contracts\InstitucionRepositoryInterface;
 use App\Repositories\Contracts\TramiteRepositoryInterface;
 use DomainException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateTramiteAction
 {
@@ -21,7 +22,6 @@ class UpdateTramiteAction
      * No se permite reasignar un trámite a una institución inactiva porque
      * implicaría que el trámite deja de ser gestionable.
      *
-     * @param  int  $id
      * @param  array{
      *     codigo?: string,
      *     nombre?: string,
@@ -29,10 +29,10 @@ class UpdateTramiteAction
      *     institucion_id?: int,
      *     dias_habiles?: int,
      * }  $data  Datos ya validados por el Form Request.
-     * @return Tramite  La instancia actualizada con la relación `institucion` refrescada.
+     * @return Tramite La instancia actualizada con la relación `institucion` refrescada.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException  Si el trámite o la institución no existen.
-     * @throws DomainException  Si la nueva institución está inactiva.
+     * @throws ModelNotFoundException Si el trámite o la institución no existen.
+     * @throws DomainException Si la nueva institución está inactiva.
      */
     public function execute(int $id, array $data): Tramite
     {

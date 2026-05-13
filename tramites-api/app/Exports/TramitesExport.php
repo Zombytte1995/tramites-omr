@@ -7,9 +7,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class TramitesExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
+class TramitesExport implements FromCollection, ShouldAutoSize, WithHeadings, WithStyles
 {
     public function __construct(private readonly Collection $tramites) {}
 
@@ -46,7 +47,7 @@ class TramitesExport implements FromCollection, WithHeadings, WithStyles, Should
             1 => [
                 'font' => ['bold' => true, 'size' => 11],
                 'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => 'F1F5F9'],
                 ],
             ],

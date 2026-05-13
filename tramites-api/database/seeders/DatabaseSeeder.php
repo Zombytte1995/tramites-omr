@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@omr.gob.sv'],
             [
-                'name'     => 'Administrador OMR',
-                'email'    => 'admin@omr.gob.sv',
+                'name' => 'Administrador OMR',
+                'email' => 'admin@omr.gob.sv',
                 'password' => Hash::make('password'),
             ]
         );

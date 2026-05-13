@@ -26,7 +26,7 @@ test('puede crear una institución válida', function () {
 
     $payload = [
         'nombre' => 'Ministerio de Prueba',
-        'tipo'   => TipoInstitucion::MINISTERIO->value,
+        'tipo' => TipoInstitucion::MINISTERIO->value,
     ];
 
     $response = $this->withToken($token)->postJson('/api/instituciones', $payload);
@@ -55,7 +55,7 @@ test('rechaza tipo de institución inválido', function () {
 
     $payload = [
         'nombre' => 'Institución Inválida',
-        'tipo'   => 'TIPO_INVENTADO',
+        'tipo' => 'TIPO_INVENTADO',
     ];
 
     $response = $this->withToken($token)->postJson('/api/instituciones', $payload);

@@ -26,13 +26,13 @@ class DashboardAction
     public function execute(): array
     {
         return [
-            'total_tramites'       => Tramite::count(),
-            'tramites_activos'     => Tramite::where('activo', true)->count(),
-            'tramites_inactivos'   => Tramite::where('activo', false)->count(),
-            'total_instituciones'  => Institucion::where('activo', true)->count(),
+            'total_tramites' => Tramite::count(),
+            'tramites_activos' => Tramite::where('activo', true)->count(),
+            'tramites_inactivos' => Tramite::where('activo', false)->count(),
+            'total_instituciones' => Institucion::where('activo', true)->count(),
 
             'tramites_por_institucion' => $this->tramitesPorInstitucion(),
-            'tramites_recientes'       => $this->tramitesRecientes(),
+            'tramites_recientes' => $this->tramitesRecientes(),
         ];
     }
 
@@ -48,9 +48,9 @@ class DashboardAction
             ->get()
             ->map(fn ($i) => [
                 'institucion' => $i->nombre,
-                'tipo'        => $i->tipo->value,
-                'total'       => (int) $i->tramites_count,
-                'activos'     => (int) $i->tramites_activos_count,
+                'tipo' => $i->tipo->value,
+                'total' => (int) $i->tramites_count,
+                'activos' => (int) $i->tramites_activos_count,
             ])
             ->all();
     }
@@ -64,12 +64,12 @@ class DashboardAction
             ->take(5)
             ->get()
             ->map(fn ($t) => [
-                'id'                => $t->id,
-                'codigo'            => $t->codigo,
-                'nombre'            => $t->nombre,
-                'dias_habiles'      => $t->dias_habiles,
-                'activo'            => (bool) $t->activo,
-                'created_at'        => $t->created_at->toDateTimeString(),
+                'id' => $t->id,
+                'codigo' => $t->codigo,
+                'nombre' => $t->nombre,
+                'dias_habiles' => $t->dias_habiles,
+                'activo' => (bool) $t->activo,
+                'created_at' => $t->created_at->toDateTimeString(),
                 'institucion_nombre' => $t->institucion?->nombre,
             ])
             ->all();

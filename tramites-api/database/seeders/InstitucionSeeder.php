@@ -13,27 +13,27 @@ class InstitucionSeeder extends Seeder
         $instituciones = [
             [
                 'nombre' => 'Ministerio de Salud',
-                'tipo'   => TipoInstitucion::MINISTERIO,
+                'tipo' => TipoInstitucion::MINISTERIO,
                 'activo' => true,
             ],
             [
                 'nombre' => 'Ministerio de Educación',
-                'tipo'   => TipoInstitucion::MINISTERIO,
+                'tipo' => TipoInstitucion::MINISTERIO,
                 'activo' => true,
             ],
             [
                 'nombre' => 'Alcaldía Municipal de San Salvador',
-                'tipo'   => TipoInstitucion::ALCALDIA,
+                'tipo' => TipoInstitucion::ALCALDIA,
                 'activo' => true,
             ],
             [
                 'nombre' => 'Corte Suprema de Justicia',
-                'tipo'   => TipoInstitucion::AUTONOMA,
+                'tipo' => TipoInstitucion::AUTONOMA,
                 'activo' => true,
             ],
             [
                 'nombre' => 'Instituto Salvadoreño de Seguro Social',
-                'tipo'   => TipoInstitucion::AUTONOMA,
+                'tipo' => TipoInstitucion::AUTONOMA,
                 'activo' => true,
             ],
         ];

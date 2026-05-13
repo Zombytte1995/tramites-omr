@@ -55,13 +55,13 @@ class InstitucionFactory extends Factory
 
         $nombre = match ($tipo) {
             TipoInstitucion::MINISTERIO => $this->faker->unique()->randomElement(self::$ministerios),
-            TipoInstitucion::ALCALDIA   => $this->faker->unique()->randomElement(self::$alcaldias),
-            TipoInstitucion::AUTONOMA   => $this->faker->unique()->randomElement(self::$autonomas),
+            TipoInstitucion::ALCALDIA => $this->faker->unique()->randomElement(self::$alcaldias),
+            TipoInstitucion::AUTONOMA => $this->faker->unique()->randomElement(self::$autonomas),
         };
 
         return [
             'nombre' => $nombre,
-            'tipo'   => $tipo,
+            'tipo' => $tipo,
             'activo' => true,
         ];
     }
@@ -74,7 +74,7 @@ class InstitucionFactory extends Factory
     public function ministerio(): static
     {
         return $this->state([
-            'tipo'   => TipoInstitucion::MINISTERIO,
+            'tipo' => TipoInstitucion::MINISTERIO,
             'nombre' => $this->faker->unique()->randomElement(self::$ministerios),
         ]);
     }
@@ -82,7 +82,7 @@ class InstitucionFactory extends Factory
     public function alcaldia(): static
     {
         return $this->state([
-            'tipo'   => TipoInstitucion::ALCALDIA,
+            'tipo' => TipoInstitucion::ALCALDIA,
             'nombre' => $this->faker->unique()->randomElement(self::$alcaldias),
         ]);
     }
@@ -90,7 +90,7 @@ class InstitucionFactory extends Factory
     public function autonoma(): static
     {
         return $this->state([
-            'tipo'   => TipoInstitucion::AUTONOMA,
+            'tipo' => TipoInstitucion::AUTONOMA,
             'nombre' => $this->faker->unique()->randomElement(self::$autonomas),
         ]);
     }

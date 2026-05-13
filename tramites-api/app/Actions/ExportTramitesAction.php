@@ -16,7 +16,7 @@ class ExportTramitesAction
     public function execute(?int $institucionId, ?string $search): BinaryFileResponse
     {
         $collection = $this->tramites->getForExport($institucionId, $search);
-        $filename   = 'tramites_' . now()->format('Y-m-d') . '.xlsx';
+        $filename = 'tramites_'.now()->format('Y-m-d').'.xlsx';
 
         return Excel::download(new TramitesExport($collection), $filename);
     }

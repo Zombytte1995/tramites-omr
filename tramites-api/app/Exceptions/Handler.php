@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Exceptions\GeminiException;
 use DomainException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -52,7 +51,7 @@ class Handler extends ExceptionHandler
         return response()->json([
             'success' => false,
             'message' => $message,
-            'errors'  => $errors,
+            'errors' => $errors,
         ], $status);
     }
 
@@ -63,32 +62,24 @@ class Handler extends ExceptionHandler
     private function classify(Throwable $e): array
     {
         return match (true) {
-            $e instanceof ValidationException
-                => [422, 'Los datos proporcionados no son válidos.', $e->errors()],
+            $e instanceof ValidationException => [422, 'Los datos proporcionados no son válidos.', $e->errors()],
 
-            $e instanceof AuthenticationException
-                => [401, 'No autenticado.', (object) []],
+            $e instanceof AuthenticationException => [401, 'No autenticado.', (object) []],
 
             $e instanceof AuthorizationException,
-            $e instanceof AccessDeniedHttpException
-                => [403, 'No autorizado.', (object) []],
+            $e instanceof AccessDeniedHttpException => [403, 'No autorizado.', (object) []],
 
             $e instanceof ModelNotFoundException,
-            $e instanceof NotFoundHttpException
-                => [404, 'Recurso no encontrado.', (object) []],
+            $e instanceof NotFoundHttpException => [404, 'Recurso no encontrado.', (object) []],
 
-            $e instanceof MethodNotAllowedHttpException
-                => [405, 'Método HTTP no permitido.', (object) []],
+            $e instanceof MethodNotAllowedHttpException => [405, 'Método HTTP no permitido.', (object) []],
 
-            $e instanceof DomainException
-                => [422, $e->getMessage(), (object) []],
+            $e instanceof DomainException => [422, $e->getMessage(), (object) []],
 
-            $e instanceof GeminiException
-                => [503, $e->getMessage(), (object) []],
+            $e instanceof GeminiException => [503, $e->getMessage(), (object) []],
 
             // HttpException genérico: usa el status code propio (ej. 419, 429, 503)
-            $e instanceof HttpException
-                => [$e->getStatusCode(), $this->httpStatusMessage($e->getStatusCode()), (object) []],
+            $e instanceof HttpException => [$e->getStatusCode(), $this->httpStatusMessage($e->getStatusCode()), (object) []],
 
             // Fallback: cualquier error no contemplado → 500
             default => $this->serverError($e),

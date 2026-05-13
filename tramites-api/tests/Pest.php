@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\User;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -12,7 +15,7 @@
 */
 
 uses(
-    Tests\TestCase::class,
+    TestCase::class,
     // Illuminate\Foundation\Testing\RefreshDatabase::class,
 )->in('Feature');
 
@@ -47,6 +50,7 @@ expect()->extend('toBeOne', function () {
  */
 function authToken(): string
 {
-    $user = \App\Models\User::factory()->create();
+    $user = User::factory()->create();
+
     return (string) auth('api')->login($user);
 }

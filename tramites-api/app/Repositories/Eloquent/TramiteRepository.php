@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\Tramite;
 use App\Repositories\Contracts\TramiteRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class TramiteRepository implements TramiteRepositoryInterface
 {
@@ -51,7 +52,7 @@ class TramiteRepository implements TramiteRepositoryInterface
         return $tramite->update(['activo' => false]);
     }
 
-    public function getForExport(?int $institucionId, ?string $search): \Illuminate\Support\Collection
+    public function getForExport(?int $institucionId, ?string $search): Collection
     {
         return $this->model
             ->with('institucion')

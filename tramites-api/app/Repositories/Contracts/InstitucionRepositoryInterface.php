@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Models\Institucion;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface InstitucionRepositoryInterface
 {
@@ -17,10 +18,8 @@ interface InstitucionRepositoryInterface
     /**
      * Busca una institución por su ID.
      *
-     * @param  int  $id
-     * @return Institucion
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function find(int $id): Institucion;
 
@@ -28,7 +27,7 @@ interface InstitucionRepositoryInterface
      * Crea una nueva institución con los datos proporcionados.
      *
      * @param  array{nombre: string, tipo: string, activo?: bool}  $data
-     * @return Institucion  La instancia recién persistida.
+     * @return Institucion La instancia recién persistida.
      */
     public function create(array $data): Institucion;
 }

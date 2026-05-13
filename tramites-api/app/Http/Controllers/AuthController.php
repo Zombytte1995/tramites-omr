@@ -21,7 +21,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Credenciales incorrectas.',
-                'errors'  => (object) [],
+                'errors' => (object) [],
             ], 401);
         }
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Sesión cerrada correctamente.',
-            'errors'  => (object) [],
+            'errors' => (object) [],
         ]);
     }
 
@@ -61,8 +61,8 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => [
-                'id'    => $user->id,
-                'name'  => $user->name,
+                'id' => $user->id,
+                'name' => $user->name,
                 'email' => $user->email,
             ],
         ]);
@@ -71,8 +71,8 @@ class AuthController extends Controller
     private function tokenResponse(string $token): JsonResponse
     {
         return response()->json([
-            'success'    => true,
-            'token'      => $token,
+            'success' => true,
+            'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);

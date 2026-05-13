@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Models\Institucion;
 use App\Repositories\Contracts\InstitucionRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -14,7 +15,7 @@ class ListInstitucionesAction
     /**
      * Retorna todas las instituciones activas ordenadas por nombre.
      *
-     * @return Collection<int, \App\Models\Institucion>
+     * @return Collection<int, Institucion>
      */
     public function execute(): Collection
     {

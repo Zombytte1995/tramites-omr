@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Repositories\Contracts\TramiteRepositoryInterface;
 use DomainException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DeactivateTramiteAction
 {
@@ -18,11 +19,9 @@ class DeactivateTramiteAction
      * sin sentido que indica un error en el flujo del llamador (por ejemplo,
      * doble clic en el botón de desactivar en el frontend).
      *
-     * @param  int  $id
-     * @return void
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException  Si el trámite no existe.
-     * @throws DomainException  Si el trámite ya está inactivo.
+     * @throws ModelNotFoundException Si el trámite no existe.
+     * @throws DomainException Si el trámite ya está inactivo.
      */
     public function execute(int $id): void
     {

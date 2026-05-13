@@ -12,11 +12,11 @@ class TramiteFactory extends Factory
 
     private static array $tramites = [
         ['nombre' => 'Registro de Nacimiento',             'dias' => 5],
-        ['nombre' => 'Certificación de Acta de Nacimiento','dias' => 3],
+        ['nombre' => 'Certificación de Acta de Nacimiento', 'dias' => 3],
         ['nombre' => 'Inscripción de Matrimonio',          'dias' => 10],
         ['nombre' => 'Declaración de Defunción',           'dias' => 3],
-        ['nombre' => 'Solicitud de Permiso de Construcción','dias' => 30],
-        ['nombre' => 'Licencia de Funcionamiento Comercial','dias' => 15],
+        ['nombre' => 'Solicitud de Permiso de Construcción', 'dias' => 30],
+        ['nombre' => 'Licencia de Funcionamiento Comercial', 'dias' => 15],
         ['nombre' => 'Registro de Marca Comercial',        'dias' => 60],
         ['nombre' => 'Inscripción en el Registro de Comercio', 'dias' => 10],
         ['nombre' => 'Certificación de Antecedentes Penales', 'dias' => 2],
@@ -25,12 +25,12 @@ class TramiteFactory extends Factory
         ['nombre' => 'Solvencia Municipal',                'dias' => 1],
         ['nombre' => 'Permiso de Importación',             'dias' => 20],
         ['nombre' => 'Registro Sanitario de Alimentos',    'dias' => 45],
-        ['nombre' => 'Autorización de Apertura de Farmacia','dias' => 30],
+        ['nombre' => 'Autorización de Apertura de Farmacia', 'dias' => 30],
         ['nombre' => 'Inscripción en el ISSS',             'dias' => 5],
         ['nombre' => 'Calificación de Discapacidad',       'dias' => 15],
         ['nombre' => 'Registro de ONG',                    'dias' => 30],
         ['nombre' => 'Certificación de Notas (MINED)',     'dias' => 5],
-        ['nombre' => 'Reconocimiento de Títulos Extranjeros','dias' => 60],
+        ['nombre' => 'Reconocimiento de Títulos Extranjeros', 'dias' => 60],
     ];
 
     private static int $codigoCounter = 1;
@@ -38,15 +38,15 @@ class TramiteFactory extends Factory
     public function definition(): array
     {
         $tramite = $this->faker->randomElement(self::$tramites);
-        $codigo  = 'TRM-' . str_pad(self::$codigoCounter++, 4, '0', STR_PAD_LEFT);
+        $codigo = 'TRM-'.str_pad(self::$codigoCounter++, 4, '0', STR_PAD_LEFT);
 
         return [
-            'codigo'         => $codigo,
-            'nombre'         => $tramite['nombre'],
-            'descripcion'    => $this->generarDescripcion($tramite['nombre']),
+            'codigo' => $codigo,
+            'nombre' => $tramite['nombre'],
+            'descripcion' => $this->generarDescripcion($tramite['nombre']),
             'institucion_id' => Institucion::factory(),
-            'dias_habiles'   => $tramite['dias'],
-            'activo'         => true,
+            'dias_habiles' => $tramite['dias'],
+            'activo' => true,
         ];
     }
 
@@ -63,7 +63,7 @@ class TramiteFactory extends Factory
     private function generarDescripcion(string $nombre): string
     {
         return "Trámite de {$nombre} requerido por los ciudadanos ante la institución competente. "
-            . 'Presentar documentación original y copia. '
-            . 'Costo sujeto a arancel vigente publicado en el Diario Oficial.';
+            .'Presentar documentación original y copia. '
+            .'Costo sujeto a arancel vigente publicado en el Diario Oficial.';
     }
 }

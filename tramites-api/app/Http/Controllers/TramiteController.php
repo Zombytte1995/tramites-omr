@@ -66,7 +66,7 @@ class TramiteController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Trámite desactivado correctamente.',
-            'errors'  => (object) [],
+            'errors' => (object) [],
         ]);
     }
 
@@ -86,7 +86,7 @@ class TramiteController extends Controller
         return response()->json([
             'data' => [
                 'tramite_id' => $tramite->id,
-                'resumen'    => $resumen,
+                'resumen' => $resumen,
             ],
         ]);
     }

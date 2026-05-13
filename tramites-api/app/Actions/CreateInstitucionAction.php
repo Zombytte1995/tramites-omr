@@ -15,7 +15,6 @@ class CreateInstitucionAction
      * Crea una nueva institución con los datos proporcionados.
      *
      * @param  array{nombre: string, tipo: string, activo?: bool}  $data
-     * @return Institucion
      */
     public function execute(array $data): Institucion
     {

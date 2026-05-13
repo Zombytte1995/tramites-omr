@@ -24,7 +24,7 @@ class Tramite extends Model
     ];
 
     protected $casts = [
-        'activo'      => 'boolean',
+        'activo' => 'boolean',
         'dias_habiles' => 'integer',
     ];
 

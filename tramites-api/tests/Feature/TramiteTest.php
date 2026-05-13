@@ -11,11 +11,11 @@ uses(RefreshDatabase::class);
 function tramitePayload(int $institucionId): array
 {
     return [
-        'codigo'         => 'TRM-TEST',
-        'nombre'         => 'Trámite de Prueba',
-        'descripcion'    => 'Descripción del trámite de prueba para el test automatizado.',
+        'codigo' => 'TRM-TEST',
+        'nombre' => 'Trámite de Prueba',
+        'descripcion' => 'Descripción del trámite de prueba para el test automatizado.',
         'institucion_id' => $institucionId,
-        'dias_habiles'   => 5,
+        'dias_habiles' => 5,
     ];
 }
 
@@ -35,7 +35,7 @@ test('puede listar trámites paginados', function () {
 
 test('puede filtrar trámites por institución', function () {
     $target = Institucion::factory()->create();
-    $other  = Institucion::factory()->create();
+    $other = Institucion::factory()->create();
 
     Tramite::factory()->count(2)->paraInstitucion($target)->create();
     Tramite::factory()->count(3)->paraInstitucion($other)->create();
@@ -61,7 +61,7 @@ test('puede buscar trámites por nombre', function () {
 // ── Creación ──────────────────────────────────────────────────────────────────
 
 test('puede crear un trámite válido', function () {
-    $token      = authToken();
+    $token = authToken();
     $institucion = Institucion::factory()->create();
 
     $response = $this->withToken($token)
@@ -98,7 +98,7 @@ test('valida que la institución exista al crear trámite', function () {
 // ── Actualización ─────────────────────────────────────────────────────────────
 
 test('puede actualizar un trámite', function () {
-    $token   = authToken();
+    $token = authToken();
     $tramite = Tramite::factory()->create();
 
     $response = $this->withToken($token)
@@ -108,7 +108,7 @@ test('puede actualizar un trámite', function () {
         ->assertJsonPath('data.nombre', 'Nombre Actualizado');
 
     $this->assertDatabaseHas('tramites', [
-        'id'     => $tramite->id,
+        'id' => $tramite->id,
         'nombre' => 'Nombre Actualizado',
     ]);
 });
@@ -116,7 +116,7 @@ test('puede actualizar un trámite', function () {
 // ── Desactivación ─────────────────────────────────────────────────────────────
 
 test('puede desactivar un trámite (soft delete lógico)', function () {
-    $token   = authToken();
+    $token = authToken();
     $tramite = Tramite::factory()->create();
 
     $response = $this->withToken($token)
@@ -126,7 +126,7 @@ test('puede desactivar un trámite (soft delete lógico)', function () {
         ->assertJsonPath('success', true);
 
     $this->assertDatabaseHas('tramites', [
-        'id'     => $tramite->id,
+        'id' => $tramite->id,
         'activo' => false,
     ]);
 

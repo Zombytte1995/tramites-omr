@@ -10,12 +10,12 @@ uses(RefreshDatabase::class);
 
 test('puede hacer login con credenciales válidas', function () {
     User::factory()->create([
-        'email'    => 'admin@omr.gob.sv',
+        'email' => 'admin@omr.gob.sv',
         'password' => Hash::make('password'),
     ]);
 
     $response = $this->postJson('/api/auth/login', [
-        'email'    => 'admin@omr.gob.sv',
+        'email' => 'admin@omr.gob.sv',
         'password' => 'password',
     ]);
 
@@ -27,12 +27,12 @@ test('puede hacer login con credenciales válidas', function () {
 
 test('rechaza login con credenciales inválidas', function () {
     User::factory()->create([
-        'email'    => 'admin@omr.gob.sv',
+        'email' => 'admin@omr.gob.sv',
         'password' => Hash::make('password'),
     ]);
 
     $response = $this->postJson('/api/auth/login', [
-        'email'    => 'admin@omr.gob.sv',
+        'email' => 'admin@omr.gob.sv',
         'password' => 'contraseña_incorrecta',
     ]);
 
@@ -54,7 +54,7 @@ test('rutas protegidas requieren autenticación', function () {
 // ── /me ───────────────────────────────────────────────────────────────────────
 
 test('puede obtener usuario autenticado en /me', function () {
-    $user  = User::factory()->create(['name' => 'Administrador Test']);
+    $user = User::factory()->create(['name' => 'Administrador Test']);
     $token = auth('api')->login($user);
 
     $response = $this->withToken($token)->getJson('/api/auth/me');
