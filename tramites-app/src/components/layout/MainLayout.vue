@@ -131,17 +131,17 @@
           class="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded"
           :aria-label="sidebarExpanded ? 'OMR — ir al dashboard' : 'Ir al dashboard'"
         >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-sm font-extrabold text-white shadow"
-          >
-            OMR
-          </span>
-          <span
+          <img
+            src="/logo_gobierno.svg"
+            alt="OMR"
+            class="h-8 w-8 shrink-0 object-contain"
+          />
+          <img
             v-if="sidebarExpanded"
-            class="overflow-hidden whitespace-nowrap text-sm font-semibold text-white transition-all duration-200 sm:block"
-          >
-            Trámites OMR
-          </span>
+            src="/GOES_OMR_letra_blanco.png"
+            alt="Trámites OMR"
+            class="h-6 w-auto overflow-hidden object-contain transition-all duration-200"
+          />
         </RouterLink>
 
         <!-- Botón colapsar (solo desktop) -->

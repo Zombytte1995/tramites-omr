@@ -102,11 +102,12 @@
 
       <!-- Cabecera: logo + títulos -->
       <header class="mb-8 text-center">
-        <div
-          aria-hidden="true"
-          class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-600 text-xl font-extrabold tracking-tight text-white shadow-lg shadow-indigo-200"
-        >
-          OMR
+        <div aria-hidden="true" class="mx-auto mb-1 flex items-center justify-center">
+          <img
+            src="/logo_gobierno.svg"
+            alt="Gobierno de El Salvador"
+            class="h-16 w-auto"
+          />
         </div>
 
         <h1 class="mt-5 text-2xl font-bold tracking-tight text-slate-900">
