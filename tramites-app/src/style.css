@@ -1,2 +1,24 @@
 /* Tailwind v4: un solo import activa base + components + utilities */
 @import "tailwindcss";
+
+@theme {
+  /*
+   * Paleta OMR — azul marino institucional
+   * Inspirada en los colores de omr.gob.sv y la identidad visual
+   * del Gobierno de El Salvador (GOES).
+   * Se mapea sobre "indigo" para que todas las clases existentes
+   * (bg-indigo-*, text-indigo-*, ring-indigo-*) hereden el nuevo tono
+   * sin cambiar ningún template.
+   */
+  --color-indigo-50:  #f0f3fb;
+  --color-indigo-100: #dce5f6;
+  --color-indigo-200: #b9cbed;
+  --color-indigo-300: #8faae4;
+  --color-indigo-400: #6488da;
+  --color-indigo-500: #3f67d0;
+  --color-indigo-600: #2a50c4;   /* botón primario */
+  --color-indigo-700: #2040a8;   /* hover botón */
+  --color-indigo-800: #1a3188;   /* borde sidebar */
+  --color-indigo-900: #1e2347;   /* fondo sidebar — color OMR institucional */
+  --color-indigo-950: #111630;
+}

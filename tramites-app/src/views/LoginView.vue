@@ -77,21 +77,22 @@
 
 <template>
   <!--
-    Background: gradiente suave + patrón de puntos SVG para textura sin peso visual.
-    La vista es el único contenido (no hay nav) y ocupa el viewport completo.
+    Background: gradiente navy OMR institucional.
+    El logo blanco (GOES_OMR_letra_blanco.png) contrasta directamente sobre
+    el fondo oscuro, siguiendo la identidad visual del Gobierno de El Salvador.
   -->
   <div
-    class="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-100 via-white to-indigo-50 px-4 py-16"
+    class="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-950 via-indigo-900 to-indigo-800 px-4 py-16"
   >
-    <!-- Patrón de puntos decorativo (aria-hidden, invisible para screen readers) -->
+    <!-- Patrón de puntos decorativo sutil sobre el fondo navy -->
     <svg
       aria-hidden="true"
-      class="pointer-events-none absolute inset-0 h-full w-full opacity-30"
+      class="pointer-events-none absolute inset-0 h-full w-full opacity-20"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
         <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.5" fill="rgb(99 102 241 / 0.3)" />
+          <circle cx="2" cy="2" r="1.5" fill="rgb(255 255 255 / 0.15)" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill="url(#dots)" />
@@ -100,20 +101,30 @@
     <!-- Contenedor principal — z-10 sobre el patrón -->
     <div class="relative z-10 w-full max-w-sm">
 
-      <!-- Cabecera: logo + títulos -->
+      <!-- Cabecera: logos + títulos sobre el fondo navy -->
       <header class="mb-8 text-center">
-        <div aria-hidden="true" class="mx-auto mb-1 flex items-center justify-center">
+        <!-- Escudo del Gobierno de El Salvador sobre fondo blanco -->
+        <div aria-hidden="true" class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white p-2 shadow-lg shadow-black/30">
           <img
             src="/logo_gobierno.svg"
-            alt="Gobierno de El Salvador"
-            class="h-16 w-auto"
+            alt="Escudo del Gobierno de El Salvador"
+            class="h-full w-full object-contain"
           />
         </div>
 
-        <h1 class="mt-5 text-2xl font-bold tracking-tight text-slate-900">
+        <!-- Logotipo OMR — texto blanco, legible sobre navy -->
+        <div aria-hidden="true" class="mx-auto mb-4 flex items-center justify-center">
+          <img
+            src="/GOES_OMR_letra_blanco.png"
+            alt="Organismo de Mejora Regulatoria"
+            class="h-8 w-auto object-contain"
+          />
+        </div>
+
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-white">
           Sistema de Trámites
         </h1>
-        <p class="mt-1 text-sm text-slate-500">
+        <p class="mt-1 text-sm text-indigo-200">
           Organismo de Mejora Regulatoria — El Salvador
         </p>
       </header>
@@ -168,12 +179,12 @@
         <div
           role="note"
           aria-label="Credenciales de prueba para evaluadores"
-          class="mt-4 rounded-xl bg-blue-50 px-5 py-4 ring-1 ring-blue-200"
+          class="mt-4 rounded-xl bg-white/10 px-5 py-4 ring-1 ring-white/20 backdrop-blur-sm"
         >
           <div class="flex items-start gap-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="mt-0.5 h-4 w-4 shrink-0 text-blue-500"
+              class="mt-0.5 h-4 w-4 shrink-0 text-indigo-200"
               viewBox="0 0 20 20"
               fill="currentColor"
               aria-hidden="true"
@@ -185,8 +196,8 @@
               />
             </svg>
             <div>
-              <p class="text-xs font-semibold text-blue-700">Credenciales de prueba</p>
-              <p class="mt-1 font-mono text-xs text-blue-600">
+              <p class="text-xs font-semibold text-white">Credenciales de prueba</p>
+              <p class="mt-1 font-mono text-xs text-indigo-200">
                 admin@omr.gob.sv / password
               </p>
             </div>
