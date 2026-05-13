@@ -1,0 +1,33 @@
+# Dependencias (se instalan en el build stage)
+vendor/
+node_modules/
+
+# Variables de entorno — nunca en la imagen
+.env
+.env.*
+.env.backup
+
+# Control de versiones
+.git/
+.gitignore
+.gitattributes
+
+# Tests (solo dev)
+tests/
+phpunit.xml
+
+# Logs y caché de runtime (se crean en el contenedor)
+storage/logs/*
+bootstrap/cache/*
+
+# Herramientas de desarrollo
+.editorconfig
+README.md
+Dockerfile
+.dockerignore
+
+# Artifacts de CI/herramientas locales
+*.log
+*.cache
+.phpunit.cache/
+.pest/
