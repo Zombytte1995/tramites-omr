@@ -5,7 +5,6 @@
   import {
     ArrowRightOnRectangleIcon,
     Bars3Icon,
-    BellIcon,
     BuildingOffice2Icon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
@@ -131,20 +130,22 @@
           class="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded"
           :aria-label="sidebarExpanded ? 'OMR — ir al dashboard' : 'Ir al dashboard'"
         >
-          <!-- Ícono colapsado: escudo sobre fondo blanco para visibilidad -->
-          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm">
-            <img
-              src="/logo_gobierno.svg"
-              alt="OMR"
-              class="h-full w-full object-contain"
-            />
+          <!--
+            Colapsado: solo el escudo en contenedor blanco (el SVG es gris,
+            necesita fondo claro para ser visible sobre el sidebar navy).
+            Expandido: logo OMR completo con texto en blanco.
+          -->
+          <div
+            v-if="!sidebarExpanded"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm"
+          >
+            <img src="/logo_gobierno.svg" alt="OMR" class="h-full w-full object-contain" />
           </div>
-          <!-- Texto expandido: logo completo blanco -->
           <img
-            v-if="sidebarExpanded"
+            v-else
             src="/GOES_OMR_letra_blanco.png"
-            alt="Trámites OMR"
-            class="h-8 w-auto overflow-hidden object-contain transition-all duration-200"
+            alt="Organismo de Mejora Regulatoria"
+            class="h-9 w-auto object-contain"
           />
         </RouterLink>
 
@@ -307,20 +308,20 @@
 
         <div class="flex-1" />
 
-        <!-- Notificaciones (placeholder decorativo) -->
-        <button
-          type="button"
-          class="relative rounded-md p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-          aria-label="Notificaciones (próximamente)"
-          title="Notificaciones (próximamente)"
-        >
-          <BellIcon class="h-5 w-5" aria-hidden="true" />
-          <!-- Dot decorativo -->
-          <span
-            class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-indigo-500 ring-2 ring-white"
+        <!-- Logo OMR institucional en el topbar -->
+        <div class="flex items-center gap-2 rounded-lg bg-indigo-900 px-3 py-1.5">
+          <img
+            src="/logo_gobierno.svg"
+            alt=""
             aria-hidden="true"
+            class="h-6 w-6 object-contain"
           />
-        </button>
+          <img
+            src="/GOES_OMR_letra_blanco.png"
+            alt="Organismo de Mejora Regulatoria"
+            class="h-5 w-auto object-contain"
+          />
+        </div>
       </header>
 
       <!-- Contenido de la página -->
