@@ -7,6 +7,7 @@ use App\Repositories\Contracts\InstitucionRepositoryInterface;
 use App\Repositories\Contracts\TramiteRepositoryInterface;
 use DomainException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateTramiteAction
 {
@@ -46,6 +47,11 @@ class UpdateTramiteAction
             }
         }
 
-        return $this->tramites->update($id, $data);
+        $tramite = $this->tramites->update($id, $data);
+
+        // Invalidar caché del resumen IA si los datos descriptivos cambiaron
+        Cache::forget("tramite.resumen.{$id}");
+
+        return $tramite;
     }
 }
