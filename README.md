@@ -202,3 +202,65 @@ tramites-omr/
 | DELETE | `/api/tramites/{id}`                      | ✓    | Desactivar trámite (soft delete)  |
 | POST   | `/api/tramites/{id}/resumen-ia`           | ✓    | Resumen con Gemini AI (caché 24h) |
 | GET    | `/api/dashboard/stats`                    | ✓    | Estadísticas del dashboard        |
+| GET    | `/api/health`                             | —    | Liveness/readiness probe (K8s)    |
+
+---
+
+## Kubernetes — Manifests de referencia para GKE
+
+> Manifests de Kubernetes de referencia para deployment en Google Kubernetes Engine,
+> alineado con el stack mencionado en la oferta de empleo.
+> Los archivos en `k8s/` son **documentación técnica** y no se ejecutan en la prueba.
+
+```text
+k8s/
+├── namespace.yaml          Namespace tramites-omr
+├── configmap.yaml          Variables públicas (APP_ENV, DB_*, PORT…)
+├── secret.yaml.example     Template de Secrets — NUNCA commitear valores reales
+├── api-deployment.yaml     2 réplicas, limits 256Mi/250m, liveness+readiness en /api/health
+├── api-service.yaml        ClusterIP 80 → 8000 (backend interno)
+├── app-deployment.yaml     2 réplicas nginx, limits 64Mi/100m
+├── app-service.yaml        NodePort 80 (requerido por GKE Ingress)
+└── ingress.yaml            GKE HTTP LB + Google Managed Certificate (TLS) + redirect HTTPS
+```
+
+### Flujo de despliegue en GKE
+
+```bash
+# 1. Autenticar con GKE
+gcloud container clusters get-credentials CLUSTER_NAME --region REGION
+
+# 2. Crear namespace y recursos base
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+
+# 3. Crear el Secret con valores reales (no el .example)
+kubectl create secret generic tramites-omr-secrets \
+  --namespace tramites-omr \
+  --from-literal=APP_KEY='base64:...' \
+  --from-literal=JWT_SECRET='...' \
+  --from-literal=DB_USERNAME='omr' \
+  --from-literal=DB_PASSWORD='...'
+
+# 4. Build y push de imágenes al Container Registry de GCP
+docker build -t gcr.io/PROJECT_ID/tramites-api:$SHA ./tramites-api
+docker build --build-arg VITE_API_URL=https://tramites.omr.gob.sv/api \
+             -t gcr.io/PROJECT_ID/tramites-app:$SHA ./tramites-app
+docker push gcr.io/PROJECT_ID/tramites-api:$SHA
+docker push gcr.io/PROJECT_ID/tramites-app:$SHA
+
+# 5. Actualizar imagen en el Deployment (rolling update sin downtime)
+kubectl set image deployment/tramites-api tramites-api=gcr.io/PROJECT_ID/tramites-api:$SHA \
+  -n tramites-omr
+kubectl set image deployment/tramites-app tramites-app=gcr.io/PROJECT_ID/tramites-app:$SHA \
+  -n tramites-omr
+
+# 6. Aplicar servicios e ingress
+kubectl apply -f k8s/api-service.yaml
+kubectl apply -f k8s/app-service.yaml
+kubectl apply -f k8s/ingress.yaml
+
+# 7. Verificar estado
+kubectl get pods -n tramites-omr
+kubectl get ingress -n tramites-omr
+```

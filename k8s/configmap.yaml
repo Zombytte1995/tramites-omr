@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tramites-omr-config
+  namespace: tramites-omr
+  labels:
+    app.kubernetes.io/name: tramites-omr
+data:
+  # ── Laravel ────────────────────────────────────────────────────────────────
+  APP_NAME: "Trámites OMR"
+  APP_ENV: "production"
+  APP_DEBUG: "false"
+
+  # ── Base de datos ──────────────────────────────────────────────────────────
+  # En producción GKE se recomienda Cloud SQL (PostgreSQL) via Cloud SQL Proxy.
+  # Cambiar a los valores del Cloud SQL Proxy si se usa esa arquitectura.
+  DB_CONNECTION: "pgsql"
+  DB_HOST: "127.0.0.1"        # Cloud SQL Auth Proxy sidecar escucha aquí
+  DB_PORT: "5432"
+  DB_DATABASE: "tramites_omr"
+
+  # ── Cache / Queue ──────────────────────────────────────────────────────────
+  CACHE_DRIVER: "file"
+  QUEUE_CONNECTION: "sync"
+  SESSION_DRIVER: "cookie"
+
+  # ── JWT ────────────────────────────────────────────────────────────────────
+  JWT_TTL: "60"
+
+  # ── Frontend (VITE_API_URL se inyecta en build-time, no aquí) ─────────────
+  PORT: "8000"

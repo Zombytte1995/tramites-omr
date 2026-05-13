@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tramites-api
+  namespace: tramites-omr
+  labels:
+    app.kubernetes.io/name: tramites-omr
+    app.kubernetes.io/component: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tramites-api
+  # RollingUpdate garantiza que siempre haya al menos 1 réplica disponible
+  # durante un deploy — sin downtime.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: tramites-api
+        app.kubernetes.io/component: api
+    spec:
+      # Evita que dos réplicas queden en el mismo nodo (alta disponibilidad)
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: tramites-api
+                topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: tramites-api
+          # En CI/CD reemplazar :latest por el SHA del commit:
+          #   image: gcr.io/PROJECT_ID/tramites-api:$GITHUB_SHA
+          image: gcr.io/PROJECT_ID/tramites-api:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+
+          # ── Variables de entorno ─────────────────────────────────────────
+          envFrom:
+            - configMapRef:
+                name: tramites-omr-config
+            - secretRef:
+                name: tramites-omr-secrets
+
+          # ── Límites de recursos ──────────────────────────────────────────
+          # requests: lo que Kubernetes reserva en el nodo al planificar.
+          # limits: el máximo que el contenedor puede consumir (OOMKill si supera RAM).
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+
+          # ── Liveness probe ───────────────────────────────────────────────
+          # Kubernetes reinicia el pod si este probe falla repetidamente.
+          # Usa /api/health porque no requiere DB ni auth — responde aunque
+          # las migraciones estén pendientes.
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          # ── Readiness probe ──────────────────────────────────────────────
+          # Kubernetes quita el pod del balanceador hasta que este probe pase.
+          # Mismo endpoint: si PHP responde, el pod puede recibir tráfico.
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+      # Termination grace period permite que las requests en vuelo terminen
+      # antes de que Kubernetes mate el proceso (php artisan serve captura SIGTERM).
+      terminationGracePeriodSeconds: 30

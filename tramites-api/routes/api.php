@@ -2,9 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\TramiteController;
 use Illuminate\Support\Facades\Route;
+
+// ── Health check (liveness/readiness probe para Kubernetes) ───────────────────
+Route::get('health', HealthController::class);
 
 // ── Autenticación ─────────────────────────────────────────────────────────────
 Route::prefix('auth')->group(function () {

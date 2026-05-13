@@ -1,0 +1,83 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tramites-omr-ingress
+  namespace: tramites-omr
+  labels:
+    app.kubernetes.io/name: tramites-omr
+  annotations:
+    # ── GKE HTTP(S) Load Balancer ────────────────────────────────────────────
+    # Indica a GKE que use el controlador de Ingress nativo (HTTP LB de GCP).
+    kubernetes.io/ingress.class: "gce"
+
+    # ── Google Managed Certificate (TLS automático) ──────────────────────────
+    # Crea la ManagedCertificate antes de aplicar este Ingress.
+    # Ver: k8s/managed-certificate.yaml (referencia adicional al pie)
+    networking.gke.io/managed-certificates: "tramites-omr-cert"
+
+    # ── Redirección HTTP → HTTPS ─────────────────────────────────────────────
+    networking.gke.io/v1beta1.FrontendConfig: "tramites-omr-frontend-config"
+
+    # ── Backend config: timeout y drenado de conexiones ─────────────────────
+    # Aumenta el timeout para requests largos (ej. generación de Excel).
+    cloud.google.com/backend-config: '{"default": "tramites-omr-backend-config"}'
+
+spec:
+  rules:
+    - host: tramites.omr.gob.sv      # Reemplazar con el dominio real
+      http:
+        paths:
+          # Las peticiones a /api/* van a la API Laravel.
+          # ImplementationSpecific permite que el path /api/* funcione
+          # correctamente con el backend de GKE (que no soporta Regex).
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: tramites-api-svc
+                port:
+                  name: http
+
+          # Todo lo demás (rutas del SPA Vue) va al frontend nginx.
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tramites-app-svc
+                port:
+                  name: http
+
+# ── Recursos adicionales requeridos por este Ingress ────────────────────────────
+# (Crear en archivos separados o añadir al apply kubectl)
+#
+# ---
+# apiVersion: networking.gke.io/v1
+# kind: ManagedCertificate
+# metadata:
+#   name: tramites-omr-cert
+#   namespace: tramites-omr
+# spec:
+#   domains:
+#     - tramites.omr.gob.sv
+#
+# ---
+# apiVersion: networking.gke.io/v1beta1
+# kind: FrontendConfig
+# metadata:
+#   name: tramites-omr-frontend-config
+#   namespace: tramites-omr
+# spec:
+#   redirectToHttps:
+#     enabled: true
+#     responseCodeName: MOVED_PERMANENTLY_DEFAULT
+#
+# ---
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: tramites-omr-backend-config
+#   namespace: tramites-omr
+# spec:
+#   timeoutSec: 60
+#   connectionDraining:
+#     drainingTimeoutSec: 30
