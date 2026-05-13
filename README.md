@@ -126,6 +126,15 @@ php artisan migrate --seed
 php artisan serve                    # http://localhost:8000
 ```
 
+> **Opcional — Integración con Google Gemini (IA):**
+> Para probar el resumen ejecutivo con IA, obtén una API key gratuita en
+> [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (requiere cuenta Google, sin tarjeta).
+> Agrega la key en `tramites-api/.env`:
+> ```env
+> GEMINI_API_KEY=tu_api_key_aqui
+> ```
+> Sin esta key, la sección de resumen muestra "servicio no disponible" y el resto del sistema funciona con normalidad.
+
 **Frontend** (terminal separada):
 
 ```bash
