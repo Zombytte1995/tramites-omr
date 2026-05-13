@@ -21,10 +21,10 @@
   import BaseSelect from '@/components/ui/BaseSelect.vue'
   import BaseTable from '@/components/ui/BaseTable.vue'
   import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
-  import TramiteCreateModal from '@/components/tramites/TramiteCreateModal.vue'
+  import TramiteFormModal from '@/components/tramites/TramiteFormModal.vue'
   import type { TableColumn } from '@/components/ui/BaseTable.vue'
   import type { SelectOption } from '@/components/ui/BaseSelect.vue'
-  import type { TramiteFilters } from '@/types'
+  import type { Tramite, TramiteFilters } from '@/types'
 
   // ── Stores & composables ──────────────────────────────────────────────────────
   const route = useRoute()
@@ -202,10 +202,22 @@
     tramitePendiente.value = null
   }
 
-  // ── Modal de creación ─────────────────────────────────────────────────────────
-  const createModalOpen = ref(false)
+  // ── Modal crear / editar ──────────────────────────────────────────────────────
+  const formModalOpen  = ref(false)
+  const tramiteEditing = ref<Tramite | null>(null)
 
-  async function onTramiteCreated(): Promise<void> {
+  function openCreate(): void {
+    tramiteEditing.value = null
+    formModalOpen.value  = true
+  }
+
+  function openEdit(row: Record<string, unknown>): void {
+    const tramites = tramitesStore.tramites?.data ?? []
+    tramiteEditing.value = tramites.find((t) => t.id === rowId(row)) ?? null
+    formModalOpen.value  = true
+  }
+
+  async function onTramiteSaved(): Promise<void> {
     await tramitesStore.fetchList(buildFilters())
   }
 
@@ -272,7 +284,7 @@
       <BaseButton
         variant="primary"
         size="md"
-        @click="createModalOpen = true"
+        @click="openCreate"
       >
         <template #icon-left>
           <span class="text-base font-bold leading-none" aria-hidden="true">+</span>
@@ -398,7 +410,7 @@
             type="button"
             class="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             :title="`Editar trámite ${rowNombre(row)}`"
-            @click="router.push(`/tramites/${rowId(row)}/editar`)"
+            @click="openEdit(row)"
           >
             <PencilSquareIcon class="h-4 w-4" aria-hidden="true" />
             <span class="sr-only">Editar {{ rowNombre(row) }}</span>
@@ -480,10 +492,11 @@
       </nav>
     </div>
 
-    <!-- ── Modal de creación de trámite ──────────────────────────────────────── -->
-    <TramiteCreateModal
-      v-model:open="createModalOpen"
-      @created="onTramiteCreated"
+    <!-- ── Modal crear / editar trámite ──────────────────────────────────────── -->
+    <TramiteFormModal
+      v-model:open="formModalOpen"
+      :tramite="tramiteEditing"
+      @saved="onTramiteSaved"
     />
 
     <!-- ── Modal de confirmación de desactivación ───────────────────────────── -->

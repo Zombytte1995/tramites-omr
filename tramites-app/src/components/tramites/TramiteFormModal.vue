@@ -9,25 +9,36 @@
   import BaseInput from '@/components/ui/BaseInput.vue'
   import BaseSelect from '@/components/ui/BaseSelect.vue'
   import type { SelectOption } from '@/components/ui/BaseSelect.vue'
-  import type { TramiteFormData } from '@/types'
+  import type { Tramite, TramiteFormData } from '@/types'
 
   // ── Props / Emits ─────────────────────────────────────────────────────────────
-  const props = defineProps<{ open: boolean }>()
-  const emit  = defineEmits<{
-    'update:open': [value: boolean]
-    created: []
+  const props = defineProps<{
+    open: boolean
+    /** Tramite a editar. null o undefined = modo creación. */
+    tramite?: Tramite | null
   }>()
 
-  const tramitesStore    = useTramitesStore()
+  const emit = defineEmits<{
+    'update:open': [value: boolean]
+    /** Se emite tanto al crear como al editar, con el trámite resultante. */
+    saved: [tramite: Tramite]
+  }>()
+
+  // ── Derived mode ──────────────────────────────────────────────────────────────
+  const isEdit = computed(() => !!props.tramite)
+  const title  = computed(() => isEdit.value ? 'Editar trámite' : 'Nuevo trámite')
+
+  // ── Stores ────────────────────────────────────────────────────────────────────
+  const tramitesStore      = useTramitesStore()
   const institucionesStore = useInstitucionesStore()
-  const toast            = useToast()
+  const toast              = useToast()
 
   // ── Select de instituciones ───────────────────────────────────────────────────
   const institucionOptions = computed((): SelectOption[] =>
     institucionesStore.instituciones.map((i) => ({ value: i.id, label: i.nombre })),
   )
 
-  // ── Estado del formulario ─────────────────────────────────────────────────────
+  // ── Formulario ────────────────────────────────────────────────────────────────
   const form = reactive({
     codigo:         '',
     nombre:         '',
@@ -43,19 +54,31 @@
   const submitting = ref(false)
   const descLength = computed(() => form.descripcion.length)
 
-  // Limpiar el formulario cada vez que el modal se abre
-  watch(() => props.open, (val) => {
-    if (val) resetForm()
-  })
+  // ── Inicialización/reset al abrir ─────────────────────────────────────────────
+  watch(
+    () => props.open,
+    (open) => {
+      if (!open) return
+      Object.keys(fieldErrors).forEach((k) => { fieldErrors[k] = '' })
 
-  function resetForm(): void {
-    form.codigo         = ''
-    form.nombre         = ''
-    form.descripcion    = ''
-    form.institucion_id = null
-    form.dias_habiles   = ''
-    Object.keys(fieldErrors).forEach((k) => { fieldErrors[k] = '' })
-  }
+      if (props.tramite) {
+        // Modo edición: pre-cargar datos
+        form.codigo         = props.tramite.codigo
+        form.nombre         = props.tramite.nombre
+        form.descripcion    = props.tramite.descripcion
+        form.institucion_id = props.tramite.institucion?.id ?? null
+        form.dias_habiles   = String(props.tramite.dias_habiles)
+      } else {
+        // Modo creación: limpiar
+        form.codigo         = ''
+        form.nombre         = ''
+        form.descripcion    = ''
+        form.institucion_id = null
+        form.dias_habiles   = ''
+      }
+    },
+    { immediate: true },
+  )
 
   // ── Validación ────────────────────────────────────────────────────────────────
   function validateField(field: string): boolean {
@@ -92,7 +115,27 @@
       .every(Boolean)
   }
 
+  // ── Limpiar errores de servidor al editar campo ───────────────────────────────
+  watch(
+    () => ({ ...form }),
+    (next, prev) => {
+      ;(Object.keys(next) as (keyof typeof form)[]).forEach((k) => {
+        if (next[k] !== prev[k] && fieldErrors[k]) fieldErrors[k] = ''
+      })
+    },
+  )
+
   // ── Envío ─────────────────────────────────────────────────────────────────────
+  function applyServerErrors(err: Error): void {
+    if (err instanceof ValidationError) {
+      Object.entries(err.errors).forEach(([field, msgs]) => {
+        if (field in fieldErrors) fieldErrors[field] = msgs[0] ?? ''
+      })
+    } else {
+      toast.error(err.message || 'Error al guardar. Intenta de nuevo.')
+    }
+  }
+
   async function onSubmit(): Promise<void> {
     if (!validateAll()) return
     submitting.value = true
@@ -106,38 +149,35 @@
     }
 
     try {
-      const result = await tramitesStore.create(payload)
-      if (result !== null) {
-        toast.success(`Trámite "${result.nombre}" creado correctamente.`)
-        emit('update:open', false)
-        emit('created')
-      } else if (tramitesStore.error instanceof ValidationError) {
-        Object.entries(tramitesStore.error.errors).forEach(([field, msgs]) => {
-          if (field in fieldErrors) fieldErrors[field] = msgs[0] ?? ''
-        })
+      if (isEdit.value && props.tramite) {
+        const result = await tramitesStore.update(props.tramite.id, payload)
+        if (result !== null) {
+          toast.success(`Trámite "${result.nombre}" actualizado correctamente.`)
+          emit('update:open', false)
+          emit('saved', result)
+        } else if (tramitesStore.error) {
+          applyServerErrors(tramitesStore.error)
+        }
       } else {
-        toast.error(tramitesStore.error?.message ?? 'Error al crear el trámite.')
+        const result = await tramitesStore.create(payload)
+        if (result !== null) {
+          toast.success(`Trámite "${result.nombre}" creado correctamente.`)
+          emit('update:open', false)
+          emit('saved', result)
+        } else if (tramitesStore.error) {
+          applyServerErrors(tramitesStore.error)
+        }
       }
     } finally {
       submitting.value = false
     }
   }
-
-  // Limpiar error de servidor cuando el usuario edita el campo
-  watch(
-    () => ({ ...form }),
-    (next, prev) => {
-      ;(Object.keys(next) as (keyof typeof form)[]).forEach((k) => {
-        if (next[k] !== prev[k] && fieldErrors[k]) fieldErrors[k] = ''
-      })
-    },
-  )
 </script>
 
 <template>
   <BaseModal
     :open="open"
-    title="Nuevo trámite"
+    :title="title"
     size="lg"
     @update:open="$emit('update:open', $event)"
   >
@@ -235,7 +275,7 @@
           size="md"
           :loading="submitting"
         >
-          Crear trámite
+          {{ isEdit ? 'Guardar cambios' : 'Crear trámite' }}
         </BaseButton>
       </div>
     </form>
