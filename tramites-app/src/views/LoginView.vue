@@ -101,31 +101,22 @@
     <!-- Contenedor principal — z-10 sobre el patrón -->
     <div class="relative z-10 w-full max-w-sm">
 
-      <!-- Cabecera: logos + títulos sobre el fondo navy -->
+      <!-- Cabecera: logo institucional OMR + nombre del sistema -->
       <header class="mb-8 text-center">
-        <!-- Escudo del Gobierno de El Salvador sobre fondo blanco -->
-        <div aria-hidden="true" class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white p-2 shadow-lg shadow-black/30">
-          <img
-            src="/logo_gobierno.svg"
-            alt="Escudo del Gobierno de El Salvador"
-            class="h-full w-full object-contain"
-          />
-        </div>
-
-        <!-- Logotipo OMR — texto blanco, legible sobre navy -->
-        <div aria-hidden="true" class="mx-auto mb-4 flex items-center justify-center">
+        <!-- Logo OMR completo (escudo + texto) en blanco — contraste directo sobre navy -->
+        <div aria-hidden="true" class="mx-auto mb-5 flex items-center justify-center">
           <img
             src="/GOES_OMR_letra_blanco.png"
-            alt="Organismo de Mejora Regulatoria"
-            class="h-8 w-auto object-contain"
+            alt="Organismo de Mejora Regulatoria — El Salvador"
+            class="h-20 w-auto object-contain drop-shadow-lg"
           />
         </div>
 
-        <h1 class="mt-2 text-2xl font-bold tracking-tight text-white">
+        <h1 class="text-2xl font-bold tracking-tight text-white">
           Sistema de Trámites
         </h1>
         <p class="mt-1 text-sm text-indigo-200">
-          Organismo de Mejora Regulatoria — El Salvador
+          Registro y consulta de trámites administrativos
         </p>
       </header>
 

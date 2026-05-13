@@ -131,19 +131,20 @@
           class="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:rounded"
           :aria-label="sidebarExpanded ? 'OMR — ir al dashboard' : 'Ir al dashboard'"
         >
-          <!-- Escudo: fondo blanco para contraste sobre el sidebar navy -->
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-sm">
+          <!-- Ícono colapsado: escudo sobre fondo blanco para visibilidad -->
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm">
             <img
               src="/logo_gobierno.svg"
               alt="OMR"
               class="h-full w-full object-contain"
             />
           </div>
+          <!-- Texto expandido: logo completo blanco -->
           <img
             v-if="sidebarExpanded"
             src="/GOES_OMR_letra_blanco.png"
             alt="Trámites OMR"
-            class="h-6 w-auto overflow-hidden object-contain transition-all duration-200"
+            class="h-8 w-auto overflow-hidden object-contain transition-all duration-200"
           />
         </RouterLink>
 
