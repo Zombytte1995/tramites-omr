@@ -8,6 +8,7 @@
   import BaseButton from '@/components/ui/BaseButton.vue'
   import BaseInput from '@/components/ui/BaseInput.vue'
   import BaseSelect from '@/components/ui/BaseSelect.vue'
+  import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
   import type { SelectOption } from '@/components/ui/BaseSelect.vue'
   import type { Tramite, TramiteFormData } from '@/types'
 
@@ -54,6 +55,24 @@
   const submitting = ref(false)
   const descLength = computed(() => form.descripcion.length)
 
+  // ── Dirty guard ─────────────────────────────────────────────────────────────────────
+  let snapshot = ''
+  const showLeaveConfirm = ref(false)
+
+  const isDirty = computed(() => JSON.stringify({ ...form }) !== snapshot)
+
+  // Intercepta Escape y click en backdrop — muestra confirm si hay cambios
+  function beforeClose(): boolean {
+    if (!isDirty.value) return true
+    showLeaveConfirm.value = true
+    return false
+  }
+
+  function confirmLeave(): void {
+    showLeaveConfirm.value = false
+    emit('update:open', false)
+  }
+
   // ── Inicialización/reset al abrir ─────────────────────────────────────────────
   watch(
     () => props.open,
@@ -76,6 +95,8 @@
         form.institucion_id = null
         form.dias_habiles   = ''
       }
+      // Snapshot después de inicializar — a partir de aquí isDirty puede ser true
+      snapshot = JSON.stringify({ ...form })
     },
     { immediate: true },
   )
@@ -179,6 +200,7 @@
     :open="open"
     :title="title"
     size="lg"
+    :on-before-close="beforeClose"
     @update:open="$emit('update:open', $event)"
   >
     <form novalidate class="space-y-5" @submit.prevent="onSubmit">
@@ -265,7 +287,7 @@
           variant="ghost"
           size="md"
           :disabled="submitting"
-          @click="$emit('update:open', false)"
+          @click="beforeClose() !== false && $emit('update:open', false)"
         >
           Cancelar
         </BaseButton>
@@ -280,4 +302,16 @@
       </div>
     </form>
   </BaseModal>
+
+  <!-- Confirmación de salir con cambios sin guardar -->
+  <ConfirmDialog
+    :open="showLeaveConfirm"
+    title="¿Descartar cambios?"
+    message="Tienes cambios sin guardar. ¿Segúro que deseas cerrar el formulario?"
+    confirm-text="Descartar"
+    cancel-text="Continuar editando"
+    variant="danger"
+    @update:open="showLeaveConfirm = $event"
+    @confirm="confirmLeave"
+  />
 </template>

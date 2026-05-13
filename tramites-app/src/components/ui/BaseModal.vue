@@ -16,6 +16,8 @@
       open: boolean
       title: string
       size?: ModalSize
+      /** Callback opcional antes de cerrar (Escape / backdrop). Retorna false para cancelar el cierre. */
+      onBeforeClose?: () => boolean
     }>(),
     { size: 'md' },
   )
@@ -31,7 +33,10 @@
     xl: 'max-w-xl',
   }
 
-  const close = (): void => emit('update:open', false)
+  const close = (): void => {
+    if (props.onBeforeClose && props.onBeforeClose() === false) return
+    emit('update:open', false)
+  }
 </script>
 
 <template>
