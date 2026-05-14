@@ -17,6 +17,7 @@
   import { useToast } from '@/composables/useToast'
   import { useDebounce } from '@/composables/useDebounce'
   import { useAsync } from '@/composables/useAsync'
+  import { exportCsv } from '@/composables/useExportCsv'
   import BaseButton from '@/components/ui/BaseButton.vue'
   import BaseSelect from '@/components/ui/BaseSelect.vue'
   import BaseTable from '@/components/ui/BaseTable.vue'
@@ -221,7 +222,19 @@
     await tramitesStore.fetchList(buildFilters())
   }
 
-  // ── Exportar a Excel ──────────────────────────────────────────────────────────
+  // ── Exportar a CSV (frontend) ─────────────────────────────────────────────────
+  function exportarCsv(): void {
+    const tramites = tramitesStore.tramites?.data ?? []
+    if (tramites.length === 0) {
+      toast.error('No hay trámites en el listado actual para exportar.')
+      return
+    }
+    const date = new Date().toISOString().slice(0, 10)
+    exportCsv(tramites, `tramites_${date}`)
+    toast.success('Archivo Excel generado correctamente.')
+  }
+
+  // ── Exportar a Excel (backend) ────────────────────────────────────────────────
   const exportLoading = ref(false)
 
   async function exportarExcel(): Promise<void> {
@@ -340,7 +353,19 @@
           <BaseButton
             variant="ghost"
             size="md"
-            title="Exportar tabla a Excel"
+            title="Exportar página actual a Excel (generado en el navegador)"
+            @click="exportarCsv"
+          >
+            <template #icon-left>
+              <ArrowDownTrayIcon class="h-4 w-4" aria-hidden="true" />
+            </template>
+            Excel (pág.)
+          </BaseButton>
+
+          <BaseButton
+            variant="ghost"
+            size="md"
+            title="Exportar todos los resultados filtrados a Excel (servidor)"
             :disabled="exportLoading"
             :aria-busy="exportLoading"
             @click="exportarExcel"
@@ -359,7 +384,7 @@
               </svg>
               <ArrowDownTrayIcon v-else class="h-4 w-4" aria-hidden="true" />
             </template>
-            {{ exportLoading ? 'Exportando…' : 'Exportar' }}
+            {{ exportLoading ? 'Exportando…' : 'Excel' }}
           </BaseButton>
         </div>
       </div>
